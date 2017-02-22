@@ -1,0 +1,26 @@
+digraph timeline {
+p0 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.fromFilePairs"];
+p1 [label="runTophat_process"];
+p0 -> p1 [label="read_pair"];
+
+p1 [label="runTophat_process"];
+p2 [label="runCufflinks_process"];
+p1 -> p2 [label="tophat_results"];
+
+p2 [label="runCufflinks_process"];
+p3 [shape=point];
+p2 -> p3 [label="cufflinks_results"];
+
+p2 [label="runCufflinks_process"];
+p4 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collectFile"];
+p2 -> p4 [label="gtf_files"];
+
+p4 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collectFile"];
+p5 [label="runMerge_process"];
+p4 -> p5 [label="assembly_names"];
+
+p5 [label="runMerge_process"];
+p6 [shape=point];
+p5 -> p6 [label="merged_results"];
+
+}
