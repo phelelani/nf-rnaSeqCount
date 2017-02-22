@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 params.data = "/spaces/phelelani/ssc_data/data_trimmed/inflated" 
-params.out = "/home/phelelani/scleroderma_analysis/jobs/assembly/nextflow_pipeline/the_results"
+params.out = "/spaces/phelelani/ssc_data/assembly/assembly_results"
 params.genes = "/global/blast/reference_genomes/Homo_sapiens/UCSC/hg19/Annotation/Genes/genes.gtf"
 params.genome = "/global/blast/reference_genomes/Homo_sapiens/UCSC/hg19/Sequence/Bowtie2Index/genome"
 
@@ -16,15 +16,16 @@ read_pair = Channel.fromFilePairs("${data_path}/caskiSubset_0*R{1,2}.fq", type: 
 
 process runTophat {
     cache = true
-    //echo = true
     executor 'pbs'
     queue 'WitsLong'
     cpus 11
     memory '200 GB'
     time '20h'
-    scratch true
+    scratch '$HOME/tmp'
     tag { sample }
-    publishDir "$out_path/${sample}", mode: 'symlink', overwrite: true
+    stageInMode 'symlink'
+    stageOutMode 'rsync'
+    publishDir "$out_path/${sample}", mode: 'copy', overwrite: false
 
     input:
     set sample, file(reads) from read_pair
@@ -37,18 +38,18 @@ process runTophat {
     """
 }
 
-
 process runCufflinks {
     cache = true
-    //echo = true
     executor 'pbs'
     queue 'WitsLong'
     cpus 11
     memory '50 GB'
     time '20h'
-    scratch true
+    scratch '$HOME/tmp'
     tag { sample }
-    publishDir "$out_path/${sample}", mode: 'symlink', overwrite: true
+    stageInMode 'symlink'
+    stageOutMode 'rsync'
+    publishDir "$out_path/${sample}", mode: 'copy', overwrite: true
     
     input:
     set sample, items from tophat_results
@@ -74,9 +75,11 @@ process runMerge {
     cpus 11
     memory '50 GB'
     time '20h'
-    scratch true
+    scratch '$HOME/tmp'
     tag { 'merge' }
-    publishDir "$out_path", mode: 'symlink', overwrite: true
+    stageInMode 'symlink'
+    stageOutMode 'rsync'
+    publishDir "$out_path", mode: 'copy', overwrite: true
     
     input:
     file(gtf) from assembly_names
@@ -106,29 +109,3 @@ workflow.onComplete {
 workflow.onError {
     println "Oops... Pipeline execution stopped with the following message: ${workflow.errorMessage}"
 }
-
-
-
-
-/*
-all_gtfs.subscribe{ println "${it.text}" }
-merged_results.subscribe{ println it }
-*/
-
-//.flatMap()
-//.flatten()
-//.collectFile(name: 'assemblies.txt', newLine: true)
-//gtf_files.subscribe { println it }
-
-//allChannels = Channel.create()
-//allChannels.bind(cufflink_results)
-//.subscribe { 
-//     println it.text
-// }
-//.subscribe { println it }
-//.subscribe {
-//    println it //"${it.name} contains:"
-    //    println it.text
-// }
-
-//all_gtfs.subscribe { println it }
