@@ -11,7 +11,7 @@ apt-get install -y build-essential
 apt-get install -y wget git zlib1g-dev unzip
 
 ## Install STAR Aligner
-## Source: https://github.com/alexdobin/STAR
+## From Source: https://github.com/alexdobin/STAR
 cd /opt \
     && wget https://github.com/alexdobin/STAR/archive/2.5.3a.tar.gz \
     && tar -vxf 2.5.3a.tar.gz \
