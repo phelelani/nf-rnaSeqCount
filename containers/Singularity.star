@@ -1,5 +1,8 @@
-Bootstrap: shub
-From: singularityhub/ubuntu
+Bootstrap: docker
+From: ubuntu:14.04.1
+
+#Bootstrap: shub
+#From: singularityhub/ubuntu
 
 %labels
 Maintainer Phelelani.Mpangase@wits.ac.za

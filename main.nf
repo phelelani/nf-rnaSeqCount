@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 params.data = "/spaces/phelelani/ssc_data/data_trimmed/inflated" 
-params.out = "/spaces/phelelani/ssc_data/assembly/star_results"
+params.out = "/spaces/phelelani/ssc_data/assembly/star_results_test_1"
 params.genes = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Annotation/Genes/genes.gtf"
 params.refSeq = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Sequence/WholeGenomeFasta/genome.fa"
 params.genome = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Sequence/STARIndex"
@@ -14,7 +14,7 @@ refSeq = params.refSeq
 
 out_path.mkdir()
 
-read_pair = Channel.fromFilePairs("${data_path}/*R[1,2].fastq", type: 'file')
+read_pair = Channel.fromFilePairs("${data_path}/*R[1,2].fq", type: 'file')
 
 // 1. Align reads to reference genome
 process runSTAR_process {
@@ -38,7 +38,7 @@ process runSTAR_process {
     set sample, file("${sample}_Aligned.sortedByCoord.out.bam") into bams_htseqCounts, bams_featureCounts
     
     """
-    ~/applications/STAR-2.5.3a/source/STAR --runMode alignReads \
+    STAR --runMode alignReads \
         --genomeDir $genome \
         --readFilesIn ${reads.get(0)} ${reads.get(1)} \
         --runThreadN 18 \
@@ -47,7 +47,12 @@ process runSTAR_process {
     """
 }
 
+bams_htseqCounts.subscribe { println it }
+bams_featureCounts.subscribe { println it }
+
+/*
 // 2. Get raw counts using HTSeq-count
+//     #~/applications/STAR-2.5.3a/source/STAR --runMode alignReads \
 process runHTSeqCount_process {
     cache = true
     executor 'pbs'
@@ -133,3 +138,4 @@ workflow.onComplete {
 workflow.onError {
     println "Oops... Pipeline execution stopped with the following message: ${workflow.errorMessage}"
 }
+*/
