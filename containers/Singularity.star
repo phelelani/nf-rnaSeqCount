@@ -1,5 +1,5 @@
 Bootstrap:docker
-From:ubuntu:14.04.1
+From:ubuntu:16.04
 
 %labels
 Maintainer Phelelani.Mpangase@wits.ac.za
