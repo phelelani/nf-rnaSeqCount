@@ -1,5 +1,5 @@
 Bootstrap:shub
-From:ubuntu:singularityhub/ubuntu
+From:singularityhub/ubuntu
 
 %labels
 Maintainer Phelelani.Mpangase@wits.ac.za
