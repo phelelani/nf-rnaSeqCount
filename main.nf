@@ -18,16 +18,11 @@ read_pair = Channel.fromFilePairs("${data_path}/*R[1,2].fq", type: 'file')
 
 // 1. Align reads to reference genome
 process runSTAR_process {
-    cache = true
-    executor 'pbs'
-    queue 'batch'
     cpus 9
     memory '50 GB'
     time '100h'
     scratch '$HOME/tmp'
     tag { sample }
-    stageInMode 'symlink'
-    stageOutMode 'rsync'
     publishDir "$out_path/${sample}", mode: 'copy', overwrite: false
 
     input:
