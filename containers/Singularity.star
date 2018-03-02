@@ -1,5 +1,5 @@
-Bootstrap:docker
-From:ubuntu:16.04
+Bootstrap:shub
+From:ubuntu:singularityhub/ubuntu
 
 %labels
 Maintainer Phelelani.Mpangase@wits.ac.za
