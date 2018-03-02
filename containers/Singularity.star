@@ -5,7 +5,7 @@ From:ubuntu:singularityhub/ubuntu
 Maintainer Phelelani.Mpangase@wits.ac.za
     
 %post	       
-### Updates and essentials
+#### Updates and essentials
 apt-get update
 apt-get install -y build-essential
 apt-get install -y wget git zlib1g-dev unzip
