@@ -44,16 +44,11 @@ process runSTAR_process {
 
 // 2. Get raw counts using HTSeq-count
 process runHTSeqCount_process {
-    cache = true
-    executor 'pbs'
-    queue 'batch'
     cpus 3
     memory '5 GB'
     time '100h'
     scratch '$HOME/tmp'
     tag { sample }
-    stageInMode 'symlink'
-    stageOutMode 'rsync'
     publishDir "$out_path/htseqCounts", mode: 'copy', overwrite: false
 
     input:
@@ -81,16 +76,11 @@ bams_featureCounts
 
 // 3b. Get raw counts using featureCounts
 process runFeatureCounts_process {
-    cache = true
-    executor 'pbs'
-    queue 'batch'
     cpus 9
     memory '50 GB'
     time '100h'
     scratch '$HOME/tmp'
     tag { sample }
-    stageInMode 'symlink'
-    stageOutMode 'rsync'
     publishDir "$out_path/featureCounts", mode: 'copy', overwrite: false
 
     input:
