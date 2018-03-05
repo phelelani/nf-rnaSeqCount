@@ -42,12 +42,7 @@ process runSTAR_process {
     """
 }
 
-bams_htseqCounts.subscribe { println it }
-bams_featureCounts.subscribe { println it }
-
-/*
 // 2. Get raw counts using HTSeq-count
-//     #~/applications/STAR-2.5.3a/source/STAR --runMode alignReads \
 process runHTSeqCount_process {
     cache = true
     executor 'pbs'
@@ -133,4 +128,3 @@ workflow.onComplete {
 workflow.onError {
     println "Oops... Pipeline execution stopped with the following message: ${workflow.errorMessage}"
 }
-*/
