@@ -19,4 +19,5 @@ cd /opt \
     && rm /opt/2.5.3a.tar.gz
 
 %environment
+## Add paths to environment
 export PATH=/opt/STAR-2.5.3a/source:$PATH

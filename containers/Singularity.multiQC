@@ -17,7 +17,7 @@ cd /opt \
     && rm /opt/get-pip.py \
     && pip install -U pip
 
-## Install HTSeq
+## Install HTSeq using PIP
 pip install multiqc
 
 

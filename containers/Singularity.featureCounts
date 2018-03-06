@@ -17,6 +17,7 @@ cd /opt \
     && rm /opt/subread-1.6.0-Linux-x86_64.tar.gz
 
 %environment
+## Add paths to environment
 export PATH=/opt/subread-1.6.0-Linux-x86_64/bin:$PATH
 
 
