@@ -36,7 +36,7 @@ process runSTAR_process {
     STAR --runMode alignReads \
         --genomeDir $genome \
         --readFilesIn ${reads.get(0)} ${reads.get(1)} \
-        --runThreadN 18 \
+        --runThreadN 8 \
         --outSAMtype BAM SortedByCoordinate \
         --outFileNamePrefix ${sample}_
     """
@@ -96,11 +96,13 @@ process runFeatureCounts_process {
         -d 40 \
         -g gene_id \
         -a $genes \
-        -T 18 \
+        -T 8 \
         -o gene_counts.txt \
         `< ${samples}`
     """
 }
+
+// 4. Do QC 
 
 workflow.onComplete {
     """
