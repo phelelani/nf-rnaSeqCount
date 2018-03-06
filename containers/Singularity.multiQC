@@ -8,17 +8,14 @@ Maintainer Phelelani.Mpangase@wits.ac.za
 ## Updates and essentials
 apt-get update
 apt-get install -y build-essential
-apt-get install -y wget python python-dev python-pip
+apt-get install -y wget python unzip
 
 ## Install PIP
-# cd /opt \
-#     && wget https://bootstrap.pypa.io/get-pip.py \
-#     && python get-pip.py \
-#     && rm /opt/get-pip.py \
-#     && pip install -U pip
+cd /opt \
+    && wget https://github.com/ewels/MultiQC/archive/master.zip \
+    && unzip master.zip \
+    && cd MultiQC-master \
+    && python setup.py install
 
-## Install HTSeq using PIP
-pip install -U pip
-pip install multiqc
 
 
