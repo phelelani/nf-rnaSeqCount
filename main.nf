@@ -103,6 +103,29 @@ process runFeatureCounts_process {
 }
 
 // 4. Do QC 
+process runQC_process {
+    cpus 1
+    memory '5 GB'
+    time '100h'
+    scratch '$HOME/tmp'
+    tag { sample }
+    publishDir "$out_path/Pipeline_QC", mode: 'copy', overwrite: false
+
+    input:
+    file(samples) from sample_bams
+
+    output:
+    file('gene_counts*') into featureCounts
+    
+    """
+    multiqc <> -o 
+    multiqc <> -o
+    """
+}
+
+
+
+
 
 workflow.onComplete {
     """
