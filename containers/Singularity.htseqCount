@@ -14,7 +14,8 @@ apt-get install -y wget python
 cd /opt \
     && wget -c https://bootstrap.pypa.io/get-pip.py \
     && python get-pip.py \
-    && rm /opt/get-pip.py
+    && rm /opt/get-pip.py \
+    && pip install -U pip
 
 ## Install HTSeq
 pip install HTSeq
