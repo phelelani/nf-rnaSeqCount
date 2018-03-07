@@ -10,7 +10,7 @@ apt-get update
 apt-get install -y build-essential
 apt-get install -y wget 
 
-## Install PIP
+## Install Subread (featureCounts)
 cd /opt \
     && wget --no-check-certificate -c https://sourceforge.net/projects/subread/files/subread-1.6.0/subread-1.6.0-Linux-x86_64.tar.gz \
     && tar -vxf subread-1.6.0-Linux-x86_64.tar.gz \
@@ -19,6 +19,3 @@ cd /opt \
 %environment
 ## Add paths to environment
 export PATH=/opt/subread-1.6.0-Linux-x86_64/bin:$PATH
-
-
-
