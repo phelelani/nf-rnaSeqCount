@@ -54,3 +54,5 @@ cd /opt \
 export PATH=/opt/bowtie2-2.3.4.1:$PATH
 export PATH=/opt/Salmon-latest_linux_x86_64/bin:$PATH
 export PATH=/opt/trinityrnaseq-Trinity-v2.6.5:$PATH
+export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+export PYTHONPATH=/usr/local/lib/python2.7/dist-packages
