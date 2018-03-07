@@ -8,7 +8,7 @@ Maintainer Phelelani.Mpangase@wits.ac.za
 ## Updates and essentials
 apt-get update
 apt-get install -y build-essential
-apt-get install -y wget git python python-pip
+apt-get install -y wget git python python-dev python-pip
 
 ## Install HTSeq using PIP
 pip install -U pip
