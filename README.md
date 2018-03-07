@@ -1,1 +1,2 @@
-Info goes here
+rnaSeqCount - " something catchy goes in here :) "
+--------------------------------------------------
