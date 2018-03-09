@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 params.data = "/spaces/phelelani/ssc_data/data_trimmed/inflated" 
-params.out = "/spaces/phelelani/ssc_data/assembly/star_results_test_1"
+params.out = "/spaces/phelelani/ssc_data/assembly/rnaSeqCount"
 params.genes = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Annotation/Genes/genes.gtf"
 params.refSeq = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Sequence/WholeGenomeFasta/genome.fa"
 params.genome = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Sequence/STARIndex"
@@ -18,9 +18,9 @@ read_pair = Channel.fromFilePairs("${data_path}/*R[1,2].fq", type: 'file')
 
 // 1. Align reads to reference genome
 process runSTAR_process {
-    cpus 9
-    memory '50 GB'
-    time '100h'
+    cpus 6
+    memory '40 GB'
+    time '10h'
     scratch '$HOME/tmp'
     tag { sample }
     publishDir "$out_path/${sample}", mode: 'copy', overwrite: false
@@ -36,7 +36,7 @@ process runSTAR_process {
     STAR --runMode alignReads \
         --genomeDir $genome \
         --readFilesIn ${reads.get(0)} ${reads.get(1)} \
-        --runThreadN 8 \
+        --runThreadN 5 \
         --outSAMtype BAM SortedByCoordinate \
         --outFileNamePrefix ${sample}_
     """
@@ -44,9 +44,9 @@ process runSTAR_process {
 
 // 2. Get raw counts using HTSeq-count
 process runHTSeqCount_process {
-    cpus 3
+    cpus 4
     memory '5 GB'
-    time '100h'
+    time '10h'
     scratch '$HOME/tmp'
     tag { sample }
     publishDir "$out_path/htseqCounts", mode: 'copy', overwrite: false
@@ -74,11 +74,11 @@ bams_featureCounts
 .collectFile () { item -> [ 'sample_bams.txt', "${item.get(1)}" + ' ' ] }
 .set { sample_bams }
 
-// 3b. Get raw counts using featureCounts
+// 3. Get raw counts using featureCounts
 process runFeatureCounts_process {
-    cpus 9
-    memory '50 GB'
-    time '100h'
+    cpus 6
+    memory '5 GB'
+    time '10h'
     scratch '$HOME/tmp'
     tag { sample }
     publishDir "$out_path/featureCounts", mode: 'copy', overwrite: false
@@ -96,50 +96,69 @@ process runFeatureCounts_process {
         -d 40 \
         -g gene_id \
         -a $genes \
-        -T 8 \
+        -T 5 \
         -o gene_counts.txt \
         `< ${samples}`
     """
 }
 
-// 4. Do QC 
-process runQC_process {
+// 4a. Collect files for STAR QC
+star_results.collectFile () { item -> [ 'qc_star.txt', "${item.get(1).find { it =~ 'Log.final.out' } }" + ' ' ] }
+.set { qc_star }
+
+// 4b. Collect files for HTSeq QC
+htseqCounts
+.collectFile () { item -> [ 'qc_htseqcounts.txt', "${item.get(1)}" + ' ' ] }
+.set { qc_htseqcounts }
+
+// 4c. Collect files for featureCounts QC
+featureCounts
+.collectFile () { item -> [ 'qc_featurecounts.txt', "${item.find { it =~ 'txt.summary' } }" + ' ' ] }
+.set { qc_featurecounts }
+
+// 4. Get QC for STAR, HTSeqCounts and featureCounts
+process runMultiQC_process {
     cpus 1
     memory '5 GB'
-    time '100h'
+    time '10h'
     scratch '$HOME/tmp'
     tag { sample }
-    publishDir "$out_path/Pipeline_QC", mode: 'copy', overwrite: false
+    publishDir "$out_path/report_QC", mode: 'copy', overwrite: false
 
     input:
-    file(samples) from sample_bams
+    file(star) from qc_star
+    file(htseqcounts) from qc_htseqcounts
+    file(featurecounts) from qc_featurecounts
 
     output:
-    file('gene_counts*') into featureCounts
+    file('*') into multiQC
     
     """
-    multiqc <> -o 
-    multiqc <> -o
+    multiqc `< ${star}` `< ${htseqcounts}` `< ${featurecounts}` --force
     """
 }
-
-
-
 
 
 workflow.onComplete {
-    """
-    Pipeline execution summary
-    ---------------------------
-    Completed at: ${workflow.complete}
-    Duration    : ${workflow.duration}
-    Success     : ${workflow.success}
-    workDir     : ${workflow.workDir}
-    exit status : ${workflow.exitStatus}
-    Error report: ${workflow.errorReport ?: '-'}
-    """
+    println "----------------------------"
+    println "Pipeline execution summary:"
+    println "----------------------------"
+    println "Execution command   : ${workflow.commandLine}"
+    println "Execution name      : ${workflow.runName}"
+    println "Workflow start      : ${workflow.start}"
+    println "Workflow end        : ${workflow.complete}"
+    println "Workflow duration   : ${workflow.duration}"
+    println "Workflow completed? : ${workflow.success}"
+    println "Work directory      : ${workflow.workDir}"
+    println "Project directory   : ${workflow.projectDir}"
+    println "Execution directory : ${workflow.launchDir}"
+    println "Configuration files : ${workflow.configFiles}"
+    println "Workflow containers : ${workflow.container}"
+    println "exit status : ${workflow.exitStatus}"
+    println "Error report: ${workflow.errorReport ?: '-'}"
+    println "---------------------------"
 }
 
 workflow.onError {
-    println "Oops... Pipeline execution stopped with the following message: ${workflow.errorMessage}"
+    println "Oohhh DANG IT!!... Pipeline execution stopped with the following message: ${workflow.errorMessage}"
 }
