@@ -6,6 +6,7 @@
 </p>
 
 # Pipeline Dependencies
+To use the rnaSeqCount pipeline, the following dependencies are required:
 ## _*Softwares*_
 - [x] [Nextflow](https://www.nextflow.io/)
 - [x] [Singularity](http://singularity.lbl.gov/)
