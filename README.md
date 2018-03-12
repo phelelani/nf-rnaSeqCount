@@ -17,6 +17,7 @@ Some fancy text
 - [x] Reference Genome (.fa)
 - [x] Reference Genome Indexes (```bowtie2``` & ```STAR``` - see below on how to generate)
 - [x] Genome Annotation (.gtf)
+
 To generate the ```STAR``` and ```bowtie2``` indexes for the reference genome, run the following commands:
 ```
 singularity exec --cleanenv containers/phelelani-rnaSeqCount-master-star.simg STAR --runThreadN 4 --runMode genomeGenerate --genomeDir <> --genomeFastaFiles <>
