@@ -5,8 +5,6 @@
   <img height="480" src="rnaSeqCount.png">
 </p>
 
-![rnaSeqCount Workflow](rnaSeqCount.png "Some text")
-
 # Pipeline Dependencies
 ## _*Softwares*_
 - [x] [Nextflow](https://www.nextflow.io/)
