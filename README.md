@@ -33,3 +33,5 @@ To run the pipeline:
 ```
 nextflow run main.nf
 ```
+
+# References
