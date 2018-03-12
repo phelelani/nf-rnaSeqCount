@@ -14,8 +14,9 @@ Some fancy text
 - [x] [MultiQC](http://multiqc.info/) - ```shub://phelelani/rnaSeqCount:multiqc```
 
 ## _*Reference Genome and Indexes*_
-- [x] Reference Genome & Annotation
-- [x] STAR Index
+- [x] Reference Genome (.fa)
+- [x] Reference Genome Indexes (```bowtie2``` & ```STAR``` - see below on how to generate)
+- [x] Genome Annotation (.gtf)
 
 # Pipeline Execution
 
