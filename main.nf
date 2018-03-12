@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 params.data = "/spaces/phelelani/ssc_data/data_trimmed/inflated" 
-params.out = "/spaces/phelelani/ssc_data/assembly/rnaSeqCount"
+params.out = "/spaces/phelelani/ssc_data/assembly/rnaSeqCount_final"
 params.genes = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Annotation/Genes/genes.gtf"
 params.refSeq = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Sequence/WholeGenomeFasta/genome.fa"
 params.genome = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Sequence/STARIndex"
@@ -14,7 +14,7 @@ refSeq = params.refSeq
 
 out_path.mkdir()
 
-read_pair = Channel.fromFilePairs("${data_path}/*R[1,2].fq", type: 'file')
+read_pair = Channel.fromFilePairs("${data_path}/*R[1,2].fastq", type: 'file')
 
 // 1. Align reads to reference genome
 process runSTAR_process {
@@ -33,6 +33,7 @@ process runSTAR_process {
     set sample, file("${sample}_Aligned.sortedByCoord.out.bam") into bams_htseqCounts, bams_featureCounts
     
     """
+    /bin/hostname
     STAR --runMode alignReads \
         --genomeDir $genome \
         --readFilesIn ${reads.get(0)} ${reads.get(1)} \
@@ -58,6 +59,7 @@ process runHTSeqCount_process {
     set sample, "${sample}.txt" into htseqCounts
     
     """
+    /bin/hostname
     htseq-count -f bam \
         -r pos \
         -i gene_id \
@@ -90,6 +92,7 @@ process runFeatureCounts_process {
     file('gene_counts*') into featureCounts
     
     """
+    /bin/hostname
     featureCounts -p -B -C -P -J -s 2 \
         -G $refSeq -J \
         -t exon \
@@ -134,6 +137,7 @@ process runMultiQC_process {
     file('*') into multiQC
     
     """
+    /bin/hostname
     multiqc `< ${star}` `< ${htseqcounts}` `< ${featurecounts}` --force
     """
 }
