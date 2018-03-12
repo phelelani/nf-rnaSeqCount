@@ -1,4 +1,4 @@
-# rnaSeqCount - " something catchy goes in here :) "
+# rnaSeqCount:_*A Nextflow pipeline for getting read counts from RNA-seq data *_
 Some fancy text
 ----
 
