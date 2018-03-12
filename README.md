@@ -18,10 +18,17 @@ Some fancy text
 - [x] STAR Index
 
 # Pipeline Execution
+
+Edit main.nf:
 ```
 params.data = "/path/to/data"
 params.out = "/path/to/output"
 params.genes = "/path/to/genes.gtf"
 params.refSeq = "/path/to/genome.fa"
 params.genome = "/path/to/STARIndex"
+```
+
+To run the pipeline:
+```
+nextflow run main.nf
 ```
