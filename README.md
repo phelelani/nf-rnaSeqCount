@@ -1,7 +1,7 @@
 # rnaSeqCount
 *rnaSeqCount* is a [Nextflow](http://nextflow.io/) pipeline for obtaining raw read counts for RNA-seq data using a given reference genome and annotation. This pipeline 
 
-![rnaSeqCount Workflow]()
+![rnaSeqCount Workflow](rnaSeqCount.pdf)
 
 # Pipeline Dependencies
 ## _*Softwares*_
