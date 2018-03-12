@@ -2,9 +2,9 @@
 ----
 Some fancy text
 
-# Dependencies
-## Softwares
-- [x] Nextflow
-- [x] Singularity
+# Pipeline Dependencies
+## _*Softwares*_
+- [x] [Nextflow](https://www.nextflow.io/)
+- [x] [Singularity](http://singularity.lbl.gov/)
 
 ## 
