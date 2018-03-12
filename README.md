@@ -16,3 +16,5 @@ Some fancy text
 ## _*Reference Genome and Indexes*_
 - [x] Reference Genome & Annotation
 - [x] STAR Index
+
+# Pipeline Execution
