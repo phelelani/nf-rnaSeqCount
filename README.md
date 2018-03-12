@@ -8,11 +8,11 @@ Some fancy text
 - [x] [Singularity](http://singularity.lbl.gov/)
 
 ## Reference Genome and Indexes
-- [x]
-- [x]
+- [x] 
+- [x] 
 
 ## Singularity Containers
-- [x] STAR
-- [x] HTSeq-Counts
-- [x] featureCounts
-- [x] MultiQC
+- [x] [STAR](https://github.com/alexdobin/STAR)
+- [x] [HTSeq-Counts](https://htseq.readthedocs.io/en/release_0.9.1/overview.html)
+- [x] [featureCounts](http://subread.sourceforge.net/)
+- [x] [MultiQC](http://multiqc.info/)
