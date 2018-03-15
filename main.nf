@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 params.data = "/spaces/phelelani/ssc_data/data_trimmed/inflated" 
-params.out = "/spaces/phelelani/ssc_data/assembly/rnaSeqCount_final"
+params.out = "/spaces/phelelani/ssc_data/nf-rnaSeqCount"
 params.genes = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Annotation/Genes/genes.gtf"
 params.refSeq = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Sequence/WholeGenomeFasta/genome.fa"
 params.genome = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Sequence/STARIndex"
