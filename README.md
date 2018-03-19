@@ -36,11 +36,7 @@ The ```nf-rnaSeqCount``` pipeline can be obtain using any of the following metho
 To generate the ```STAR``` and ```bowtie2``` indexes for the reference genome, run the following commands:
 ### 3.1. ```STAR``` index
 ```
-singularity exec --cleanenv containers/phelelani-rnaSeqCount-master-star.simg STAR \
-  --runThreadN 4 \
-  --runMode genomeGenerate \
-  --genomeDir <> \
-  --genomeFastaFiles <>
+singularity exec --cleanenv containers/phelelani-rnaSeqCount-master-star.simg STAR --runThreadN 4 --runMode genomeGenerate --genomeDir <> --genomeFastaFiles <>
 ```
 
 ### 3.2. ```bowtie2``` index
