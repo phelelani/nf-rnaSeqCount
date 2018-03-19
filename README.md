@@ -44,6 +44,9 @@ singularity exec --cleanenv containers/phelelani-rnaSeqCount-master-star.simg ST
 ```
 
 ### 3.2. ```bowtie2``` index
+```
+singularity exec --cleanenv containers/phelelani-rnaSeqCount-master-star.simg bowtie2-build </path/to/genome.fa> </path/to/genome>
+```
 
 # 4. Pipeline Execution
 The ```nf-rnaSeqCount``` pipeline can be run in one of two ways:
