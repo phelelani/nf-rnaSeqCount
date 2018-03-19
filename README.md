@@ -46,17 +46,27 @@ singularity exec --cleanenv containers/phelelani-rnaSeqCount-master-star.simg ST
 ## 3.2. ```bowtie2``` index
 
 # 4. Pipeline Execution
+The ```nf-rnaSeqCount``` pipeline can be run in one of two ways:
 
+## 4.1. Directly from the command line by supplying the required parameters
+```nextflow run main.nf \
+  --data <"/path/to/data"> \
+  --out <"/path/to/output"> \
+  --genome <"/path/to/genome.fa"> \
+  --genes <"/path/to/genes.gtf"> \
+  --index <"/path/to/STARIndex"> \
+```
+# 4.2. By editing the ```main.nf``` file and specifying the parameters
 Edit main.nf:
 ```
-params.data = "/path/to/data"
-params.out = "/path/to/output"
-params.genes = "/path/to/genes.gtf"
-params.refSeq = "/path/to/genome.fa"
-params.genome = "/path/to/STARIndex"
+params.data = "/path/to/data"           // Path to where the input data is located (where fastq files are located).
+params.out = "/path/to/output"          // Path to where the output should be directed.
+params.genes = "/path/to/genes.gtf"     // The genome annotation file
+params.genome = "/path/to/genome.fa"    // The whole genome sequence
+params.index = "/path/to/STARIndex"     // Path to where the STAR index files are locaded
 ```
 
-To run the pipeline:
+Then run the pipeline:
 ```
 nextflow run main.nf
 ```
