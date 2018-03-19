@@ -51,11 +51,11 @@ The ```nf-rnaSeqCount``` pipeline can be run in one of two ways:
 ## 4.1. Directly from the command line by supplying the required parameters
 ```
 nextflow run main.nf \
-  --data <'/path/to/data'> \
-  --out <'/path/to/output'> \
-  --genome <'/path/to/genome.fa'> \
-  --genes <'/path/to/genes.gtf'> \
-  --index <'/path/to/STARIndex'> \
+  --data '/path/to/data' \
+  --out '/path/to/output' \
+  --genome '/path/to/genome.fa' \
+  --genes '/path/to/genes.gtf' \
+  --index '/path/to/STARIndex' \
 ```
 # 4.2. By editing the ```main.nf``` file and specifying the parameters
 Edit main.nf:
