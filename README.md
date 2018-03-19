@@ -24,13 +24,13 @@ To use the rnaSeqCount pipeline, the following dependencies are required:
 # Optaining the pipeline
 The ```nf-rnaSeqCount``` pipeline can be obtain using any of the following methods:
 
-## Using the ```git``` command:
+## 1. _*Using the ```git``` command:*_
 - [x] ```git clone https://github.com/phelelani/nf-rnaSeqCount.git```
 
-## Using nextflow:
+## 2. _*Using nextflow:*_
 - [x] ```nextflow pull phelelani/```
 - [x] ```nextflow pull https://github.com/phelelani/nf-rnaSeqCount.git```
-- [x] ```nextflow clone phelelani/nf-rnaSeqCount <target-dir>
+- [x] ```nextflow clone phelelani/nf-rnaSeqCount <target-dir>```
 
 To generate the ```STAR``` and ```bowtie2``` indexes for the reference genome, run the following commands:
 ```
