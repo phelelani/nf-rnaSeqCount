@@ -21,26 +21,26 @@ To use the rnaSeqCount pipeline, the following dependencies are required:
 - [x] Reference Genome (.fa) and Genome Annotation (.gtf) files
 - [x] Reference Genome Indexes (```bowtie2``` & ```STAR``` - see *3.* below on how to generate)
 
-# 2. Optaining the pipeline
+# 2. Optaining the ```nf-rnaSeqCount``` pipeline
 The ```nf-rnaSeqCount``` pipeline can be obtain using any of the following methods:
 
 ## 2.1. Using the ```git``` command:
 - [x] ```git clone https://github.com/phelelani/nf-rnaSeqCount.git```
 
 ## 2.2. Using the ```nextflow``` command:
-- [x] ```nextflow pull phelelani/```
+- [x] ```nextflow pull phelelani/nf-rnaSeqCount```
 - [x] ```nextflow pull https://github.com/phelelani/nf-rnaSeqCount.git```
 - [x] ```nextflow clone phelelani/nf-rnaSeqCount <target-dir>```
 
-# 3. Generating ```STAR``` and ```bowtie2``` genome indexes.
+# 3. Generating genome indexes.
 To generate the ```STAR``` and ```bowtie2``` indexes for the reference genome, run the following commands:
 ## 3.1. ```STAR``` index
 ```
 singularity exec --cleanenv containers/phelelani-rnaSeqCount-master-star.simg STAR \
   --runThreadN 4 \
-   --runMode genomeGenerate \
-   --genomeDir <> \
-   --genomeFastaFiles <>
+  --runMode genomeGenerate \
+  --genomeDir <> \
+  --genomeFastaFiles <>
 ```
 
 ## 3.2. ```bowtie2``` index
