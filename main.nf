@@ -1,20 +1,74 @@
 #!/usr/bin/env nextflow
 
-params.data = "/spaces/phelelani/ssc_data/data_trimmed/inflated" 
-params.out = "/spaces/phelelani/ssc_data/nf-rnaSeqCount"
-params.genes = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Annotation/Genes/genes.gtf"
-params.refSeq = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Sequence/WholeGenomeFasta/genome.fa"
-params.genome = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Sequence/STARIndex"
+// PIPELINE PARAMETERS - Edit if brave... Else, specify options on command line
+params.data    = "/spaces/phelelani/ssc_data/data_trimmed/inflated"                                                   // Path to where the input data is located (where fastq files are located).
+params.out     = "/spaces/phelelani/ssc_data/nf-rnaSeqCount"                                                          // Path to where the output should be directed.
+params.genes   = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Annotation/Genes/genes.gtf"             // The genome annotation file
+params.genome  = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Sequence/WholeGenomeFasta/genome.fa"    // The whole genome sequence
+params.index   = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Sequence/STARIndex"                     // Path to where the STAR index files are locaded
+params.bind    = '/global/;/spaces/'                                                                                  // Paths to be passed onto the singularity image
 
-data_path = params.data
-out_path = file(params.out)
-genes = params.genes
-genome = params.genome
-refSeq = params.refSeq
+// DO NOT EDIT FROM HERE
+data_path      = file(params.data, type: 'dir')                                                                       // Path to where the input data is located (where fastq files are located). 
+out_path       = file(params.out, type: 'dir')                                                                        // Path to where the output should be directed.
+genes          = file(params.genes, type: 'file')                                                                     // The genome annotation file 
+index          = file(params.index, type: 'dir')                                                                      // Path to where the STAR index files are locaded 
+genome         = file(params.genome, type: 'file')                                                                    // The whole genome sequence
+bind           = params.bind.split(';')                                                                               // Paths to be passed onto the singularity image
+//======================================================================================================
+//
+//
+//
+//======================================================================================================
+// HELP MENU
+if (params.help) {
+    log.info ''
+    log.info "===================================="
+    log.info "         nf-rnaSeqCount v0.1        "
+    log.info "===================================="
+    log.info ''
+    log.info 'USAGE: '
+    log.info 'nextflow run main.nf --data /path/to/data --out /path/to/output --genome /path/to/genome.fa --genes /path/to/genes.gtf --index /path/to/STARIndex'
+    log.info ''
+    log.info 'HELP: '
+    log.info 'nextflow run main.nf --help'
+    log.info ''
+    log.info 'MANDATORY ARGUEMENTS:'
+    log.info '    --data     FOLDER    Path to where the input data is located (fastq | fq)'
+    log.info '    --out      FOLDER    Path to where the output should be directed (will be created if it does not exist).'
+    log.info '    --genome   FILE      The whole genome sequence (fasta | fa | fna)'
+    log.info '    --genes    FILE      The genome annotation file (gtf)'
+    log.info '    --index    FOLDER    Path to where the STAR index files are locaded'
+    log.info '    --bind     FOLDER(S) Paths to be passed onto the singularity image'
+    log.info ''
+    log.info "====================================\n"
+    exit 1
+}
 
+// RUN INFO
+log.info "===================================="
+log.info "           nf-rnaSeqCount           "
+log.info "===================================="
+log.info "Input data          : ${data_path}"
+log.info "Output path         : ${out_path}"
+log.info "Genome              : ${genome}"
+log.info "Genome Index (STAR) : ${index}"
+log.info "Genome annotation   : ${genes}"
+log.info "Paths to bind       : ${bind}"
+log.info "====================================\n"
+//======================================================================================================
+//
+//
+//
+//======================================================================================================
+// PIPELINE START
+//Create output directory
 out_path.mkdir()
 
-read_pair = Channel.fromFilePairs("${data_path}/*R[1,2].fastq", type: 'file')
+// Get input reads
+read_pair = Channel.fromFilePairs("${data_path}/*R[1,2].fastq", type: 'file') 
+                   .ifEmpty { error "ERROR - Data input: \nOooops... Cannot find any '.fastq' or '.fq' files in ${data_path}. Please specify a folder with '.fastq' or '.fq' files."}
+
 
 // 1. Align reads to reference genome
 process runSTAR_process {
@@ -27,15 +81,14 @@ process runSTAR_process {
 
     input:
     set sample, file(reads) from read_pair
-
+    
     output:
     set sample, "${sample}*" into star_results
     set sample, file("${sample}_Aligned.sortedByCoord.out.bam") into bams_htseqCounts, bams_featureCounts
     
     """
-    /bin/hostname
     STAR --runMode alignReads \
-        --genomeDir $genome \
+        --genomeDir ${index} \
         --readFilesIn ${reads.get(0)} ${reads.get(1)} \
         --runThreadN 5 \
         --outSAMtype BAM SortedByCoordinate \
@@ -59,7 +112,6 @@ process runHTSeqCount_process {
     set sample, "${sample}.txt" into htseqCounts
     
     """
-    /bin/hostname
     htseq-count -f bam \
         -r pos \
         -i gene_id \
@@ -82,7 +134,7 @@ process runFeatureCounts_process {
     memory '5 GB'
     time '10h'
     scratch '$HOME/tmp'
-    tag { sample }
+    tag { 'featureCounts - ALL' }
     publishDir "$out_path/featureCounts", mode: 'copy', overwrite: false
 
     input:
@@ -92,9 +144,8 @@ process runFeatureCounts_process {
     file('gene_counts*') into featureCounts
     
     """
-    /bin/hostname
     featureCounts -p -B -C -P -J -s 2 \
-        -G $refSeq -J \
+        -G $genome -J \
         -t exon \
         -d 40 \
         -g gene_id \
@@ -125,7 +176,7 @@ process runMultiQC_process {
     memory '5 GB'
     time '10h'
     scratch '$HOME/tmp'
-    tag { sample }
+    tag { 'MultiQC - ALL' }
     publishDir "$out_path/report_QC", mode: 'copy', overwrite: false
 
     input:
@@ -137,16 +188,19 @@ process runMultiQC_process {
     file('*') into multiQC
     
     """
-    /bin/hostname
     multiqc `< ${star}` `< ${htseqcounts}` `< ${featurecounts}` --force
     """
 }
-
-
+//======================================================================================================
+//
+//
+//
+//======================================================================================================
+// WORKFLOW SUMMARY
 workflow.onComplete {
-    println "----------------------------"
+    println "===================================="
     println "Pipeline execution summary:"
-    println "----------------------------"
+    println "===================================="
     println "Execution command   : ${workflow.commandLine}"
     println "Execution name      : ${workflow.runName}"
     println "Workflow start      : ${workflow.start}"
@@ -160,9 +214,10 @@ workflow.onComplete {
     println "Workflow containers : ${workflow.container}"
     println "exit status : ${workflow.exitStatus}"
     println "Error report: ${workflow.errorReport ?: '-'}"
-    println "---------------------------"
+    println "===================================="
 }
 
 workflow.onError {
     println "Oohhh DANG IT!!... Pipeline execution stopped with the following message: ${workflow.errorMessage}"
 }
+//======================================================================================================
