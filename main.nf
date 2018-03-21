@@ -3,17 +3,17 @@
 // PIPELINE PARAMETERS - Edit if brave... Else, specify options on command line
 params.data    = "/spaces/phelelani/ssc_data/data_trimmed/inflated"                                                   // Path to where the input data is located (where fastq files are located).
 params.out     = "/spaces/phelelani/ssc_data/nf-rnaSeqCount"                                                          // Path to where the output should be directed.
-params.genes   = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Annotation/Genes/genes.gtf"             // The genome annotation file
 params.genome  = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Sequence/WholeGenomeFasta/genome.fa"    // The whole genome sequence
 params.index   = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Sequence/STARIndex"                     // Path to where the STAR index files are locaded
+params.genes   = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Annotation/Genes/genes.gtf"             // The genome annotation file
 params.bind    = '/global/;/spaces/'                                                                                  // Paths to be passed onto the singularity image
 
 // DO NOT EDIT FROM HERE
 data_path      = file(params.data, type: 'dir')                                                                       // Path to where the input data is located (where fastq files are located). 
 out_path       = file(params.out, type: 'dir')                                                                        // Path to where the output should be directed.
-genes          = file(params.genes, type: 'file')                                                                     // The genome annotation file 
-index          = file(params.index, type: 'dir')                                                                      // Path to where the STAR index files are locaded 
 genome         = file(params.genome, type: 'file')                                                                    // The whole genome sequence
+index          = file(params.index, type: 'dir')                                                                      // Path to where the STAR index files are locaded 
+genes          = file(params.genes, type: 'file')                                                                     // The genome annotation file 
 bind           = params.bind.split(';')                                                                               // Paths to be passed onto the singularity image
 //======================================================================================================
 //
@@ -37,8 +37,8 @@ if (params.help) {
     log.info '    --data     FOLDER    Path to where the input data is located (fastq | fq)'
     log.info '    --out      FOLDER    Path to where the output should be directed (will be created if it does not exist).'
     log.info '    --genome   FILE      The whole genome sequence (fasta | fa | fna)'
-    log.info '    --genes    FILE      The genome annotation file (gtf)'
     log.info '    --index    FOLDER    Path to where the STAR index files are locaded'
+    log.info '    --genes    FILE      The genome annotation file (gtf)'
     log.info '    --bind     FOLDER(S) Paths to be passed onto the singularity image'
     log.info ''
     log.info "====================================\n"
