@@ -1,26 +1,10 @@
 #!/usr/bin/env nextflow
-
-// PIPELINE PARAMETERS - Edit if brave... Else, specify options on command line
-params.data    = "/spaces/phelelani/ssc_data/data_trimmed/inflated"                                                   // Path to where the input data is located (where fastq files are located).
-params.out     = "/spaces/phelelani/ssc_data/nf-rnaSeqCount"                                                          // Path to where the output should be directed.
-params.genome  = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Sequence/WholeGenomeFasta/genome.fa"    // The whole genome sequence
-params.index   = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Sequence/STARIndex"                     // Path to where the STAR index files are locaded
-params.genes   = "/global/blast/reference_genomes/Homo_sapiens/Ensembl/GRCh38/Annotation/Genes/genes.gtf"             // The genome annotation file
-params.bind    = '/global/;/spaces/'                                                                                  // Paths to be passed onto the singularity image
-
-// DO NOT EDIT FROM HERE
-data_path      = file(params.data, type: 'dir')                                                                       // Path to where the input data is located (where fastq files are located). 
-out_path       = file(params.out, type: 'dir')                                                                        // Path to where the output should be directed.
-genome         = file(params.genome, type: 'file')                                                                    // The whole genome sequence
-index          = file(params.index, type: 'dir')                                                                      // Path to where the STAR index files are locaded 
-genes          = file(params.genes, type: 'file')                                                                     // The genome annotation file 
-bind           = params.bind.split(';')                                                                               // Paths to be passed onto the singularity image
-//======================================================================================================
 //
-//
-//
-//======================================================================================================
-// HELP MENU
+//  DO NOT EDIT FROM HERE!! - Unless you brave like King Shaka of course! 
+/*  ======================================================================================================
+ *  HELP MENU!
+ *  ======================================================================================================
+ */
 if (params.help) {
     log.info ''
     log.info "===================================="
@@ -39,34 +23,79 @@ if (params.help) {
     log.info '    --genome   FILE      The whole genome sequence (fasta | fa | fna)'
     log.info '    --index    FOLDER    Path to where the STAR index files are locaded'
     log.info '    --genes    FILE      The genome annotation file (gtf)'
-    log.info '    --bind     FOLDER(S) Paths to be passed onto the singularity image'
+    log.info '    --bind     FOLDER(S) Paths to be passed onto the singularity image (Semi-colon separated)'
     log.info ''
     log.info "====================================\n"
     exit 1
 }
+//
+//
+/*  ======================================================================================================
+ *  CHECK ALL USER INPUTS
+ *  ======================================================================================================
+ */
+if(params.data == null) {
+    exit 1, "\nPlease enter a directory with input FASTQ/FASTQ.GZ files."
+} else{
+    data_path = file(params.data, type: 'dir')  // Path to where the input data is located (where fastq files are located).
+}
 
-// RUN INFO
+if(params.out == null) {
+    params.out = "${baseDir}/results_nf-rnaSeqCount"
+} else{
+    out_path = file(params.out, type: 'dir')   // Path to where the output should be directed.
+}
+
+if(params.genome == null) {
+    exit 1, "Please provide a FASTA sequence of the reference genome."
+} else{
+    genome = file(params.genome, type: 'file')  // The whole genome sequence
+}
+
+if(params.index == null) {
+    exit 1, "Please provide a STAR index."
+} else{
+    index = file(params.index, type: 'dir')  // Path to where the STAR index files are locaded 
+}
+
+if(params.genes == null) {
+    exit 1, "Please provide an annotation GTF file."
+} else{
+    genes = file(params.genes, type: 'file')  // The genome annotation file 
+}
+
+if(params.bind == null) {
+    bind = "No paths specified for binding to Singularity images! I will assume the data lies somewhere in the '$HOME' directory."
+} else{
+    bind = params.bind.split(';')  // Paths to be passed onto the singularity image
+}
+//
+//
+/*  ======================================================================================================
+ *  RUN INFO
+ *  ======================================================================================================
+ */
 log.info "===================================="
 log.info "           nf-rnaSeqCount           "
 log.info "===================================="
-log.info "Input data          : ${data_path}"
-log.info "Output path         : ${out_path}"
-log.info "Genome              : ${genome}"
-log.info "Genome Index (STAR) : ${index}"
-log.info "Genome annotation   : ${genes}"
-log.info "Paths to bind       : ${bind}"
+log.info "Input data          : $data_path"
+log.info "Output path         : $out_path"
+log.info "Genome              : $genome"
+log.info "Genome Index (STAR) : $index"
+log.info "Genome annotation   : $genes"
+log.info "Paths to bind       : $bind"
 log.info "====================================\n"
-//======================================================================================================
 //
 //
-//
-//======================================================================================================
-// PIPELINE START
-//Create output directory
+/*  ======================================================================================================
+ *  PIPELINE START
+ *  ======================================================================================================
+ */
+// Create output directory
 out_path.mkdir()
 
 // Get input reads
-read_pair = Channel.fromFilePairs("${data_path}/*R[1,2].fastq", type: 'file') 
+read_pair = Channel.fromFilePairs("${data_path}/*R[1,2].fq", type: 'file') 
                    .ifEmpty { error "ERROR - Data input: \nOooops... Cannot find any '.fastq' or '.fq' files in ${data_path}. Please specify a folder with '.fastq' or '.fq' files."}
 
 
@@ -191,12 +220,12 @@ process runMultiQC_process {
     multiqc `< ${star}` `< ${htseqcounts}` `< ${featurecounts}` --force
     """
 }
-//======================================================================================================
 //
 //
-//
-//======================================================================================================
-// WORKFLOW SUMMARY
+/*  ======================================================================================================
+ *  WORKFLOW SUMMARY
+ *  ======================================================================================================
+ */
 workflow.onComplete {
     println "===================================="
     println "Pipeline execution summary:"
