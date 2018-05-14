@@ -61,15 +61,17 @@ nextflow run main.nf --data '/path/to/data' \
     --genes '/path/to/genes.gtf' \
     --bind '/path/to/bind;/another/path/to/bind'
 ```
-### 4.2. By editing the ```main.nf``` file and specifying the parameters
-Edit main.nf:
+### 4.2. By editing the ```parameters.config``` file and specifying the parameters
+Edit parameters.config:
 ```
-params.data     = '/path/to/data'                       // Path to where the input data is located (where fastq files are located).
-params.out      = '/path/to/output'                     // Path to where the output should be directed.
-params.genome   = '/path/to/genome.fa'                  // The whole genome sequence (fasta | fa | fna).
-params.index    = '/path/to/STARIndex'                  // Path to where the STAR index files are locaded.
-params.genes    = '/path/to/genes.gtf'                  // The genome annotation file.
-params.bind     = '/path/to/bind;/another/path/to/bind' // Paths to be passed onto the singularity image (Semi-colon separated).
+params {
+  data     = '/path/to/data'                       // Path to where the input data is located (where fastq files are located).
+  out      = '/path/to/output'                     // Path to where the output should be directed.
+  genome   = '/path/to/genome.fa'                  // The whole genome sequence (fasta | fa | fna).
+  index    = '/path/to/STARIndex'                  // Path to where the STAR index files are locaded.
+  genes    = '/path/to/genes.gtf'                  // The genome annotation file.
+  bind     = '/path/to/bind;/another/path/to/bind' // Paths to be passed onto the singularity image (Semi-colon separated).
+}
 ```
 
 Then run the pipeline:
