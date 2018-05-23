@@ -2,7 +2,7 @@
 //
 //  DO NOT EDIT FROM HERE!! - Unless you brave like King Shaka of course! 
 /*  ======================================================================================================
- *  HELP MENU!
+ *  HELP MENU
  *  ======================================================================================================
  */
 if (params.help) {
@@ -49,19 +49,19 @@ if(params.out == null) {
 if(params.genome == null) {
     exit 1, "Please provide a FASTA sequence of the reference genome."
 } else{
-    genome = file(params.genome, type: 'file')  // The whole genome sequence
+    genome = file(params.genome, type: 'file')  // The whole genome sequence.
 }
 
 if(params.index == null) {
     exit 1, "Please provide a STAR index."
 } else{
-    index = file(params.index, type: 'dir')  // Path to where the STAR index files are locaded 
+    index = file(params.index, type: 'dir')  // Path to where the STAR index files are locaded.
 }
 
 if(params.genes == null) {
     exit 1, "Please provide an annotation GTF file."
 } else{
-    genes = file(params.genes, type: 'file')  // The genome annotation file 
+    genes = file(params.genes, type: 'file')  // The genome annotation file.
 }
 
 if(params.bind == null) {
@@ -182,10 +182,8 @@ process runFeatureCounts_process {
         -T 5 \
         -o gene_counts.txt \
         `< ${samples}`
-
-    sed '1d' | cut -f 1,7- gene_counts.txt tmp_genes.txt
-
-    template 'clean_featureCounts.sh'
+    sed '1d' | cut -f 1,7- gene_counts.txt > tmp_genes.txt
+    ./clean_featureCounts.sh
     """
 }
 

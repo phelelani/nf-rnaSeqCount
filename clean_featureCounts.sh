@@ -1,11 +1,9 @@
 #!/bin/bash
 
+## This script is for tidying up the gene counts output from featureCounts and create a matrix ready for use.
 while read line
 do 
-    if [ ${line:0:1} == "#" ]
-    then
-        :
-    elif [ ${line:0:6} == "Geneid" ]
+    if [ ${line:0:6} == "Geneid" ]
     then
         read -a arr <<< $line
         for i in "${!arr[@]}"
