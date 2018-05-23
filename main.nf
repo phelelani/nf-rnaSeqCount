@@ -96,7 +96,7 @@ out_path.mkdir()
 
 // Get input reads
 read_pair = Channel.fromFilePairs("${data_path}/*R[1,2].fq", type: 'file') 
-                   .ifEmpty { error "ERROR - Data input: \nOooops... Cannot find any '.fastq' or '.fq' files in ${data_path}. Please specify a folder with '.fastq' or '.fq' files."}
+.ifEmpty { error "ERROR - Data input: \nOooops... Cannot find any '.fastq' or '.fq' files in ${data_path}. Please specify a folder with '.fastq' or '.fq' files."}
 
 
 // 1. Align reads to reference genome
@@ -182,6 +182,10 @@ process runFeatureCounts_process {
         -T 5 \
         -o gene_counts.txt \
         `< ${samples}`
+
+    sed '1d' | cut -f 1,7- gene_counts.txt tmp_genes.txt
+
+    template 'clean_featureCounts.sh'
     """
 }
 
