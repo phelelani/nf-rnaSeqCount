@@ -79,14 +79,14 @@ Edit parameters.config:
  *  help      : Print out help menu. Passed as "--help" to the "main.nf" script for detailed information
  */
 params {
-    data     = "/path/to/data"
-    filetype = "fastq.gz"
-    out      = "/path/to/output"
-    genome   = "/path/to/genome.fa'"  
-    index    = "/path/to/STARIndex"
-    genes    = "/path/to/genes.gtf" 
-    bind     = "/path/to/bind_1;/path/to/bind_2"
-    help     = null
+    data      = "/path/to/data"
+    filetype  = "fastq.gz"
+    out       = "/path/to/output"
+    genome    = "/path/to/genome.fa'"  
+    index     = "/path/to/STARIndex"
+    genes     = "/path/to/genes.gtf" 
+    bind      = "/path/to/bind_1;/path/to/bind_2"
+    help      = null
 }
 ```
 
