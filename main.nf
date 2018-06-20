@@ -12,18 +12,20 @@ if (params.help) {
     log.info "===================================="
     log.info ''
     log.info 'USAGE: '
-    log.info 'nextflow run main.nf --data /path/to/data --out /path/to/output --genome /path/to/genome.fa --genes /path/to/genes.gtf --index /path/to/STARIndex'
+    log.info 'nextflow run main.nf --data "/path/to/data" --filetype "type" --out "/path/to/output" --genome "/path/to/genome.fa" --index "/path/to/STARIndex" --genes "/path/to/genes.gtf" --bind "/path/to/bind_1;/path/to/bind_2" -profile "profile" '
     log.info ''
     log.info 'HELP: '
     log.info 'nextflow run main.nf --help'
     log.info ''
     log.info 'MANDATORY ARGUEMENTS:'
-    log.info '    --data     FOLDER    Path to where the input data is located (fastq | fq)'
-    log.info '    --out      FOLDER    Path to where the output should be directed (will be created if it does not exist).'
-    log.info '    --genome   FILE      The whole genome sequence (fasta | fa | fna)'
-    log.info '    --index    FOLDER    Path to where the STAR index files are locaded'
-    log.info '    --genes    FILE      The genome annotation file (gtf)'
-    log.info '    --bind     FOLDER(S) Paths to be passed onto the singularity image (Semi-colon separated)'
+    log.info '    --data      FOLDER     Path to where the input data is located (where fastq files are located)'
+    log.info '    --filetype  STRING     Extension of the input FASTQ files (fastq | fq | fastq.gz | fq.gz | fastq.bz2 | fq.bz2)'
+    log.info '    --out       FOLDER     Path to where the output should be directed (will be created if it does not exist).'
+    log.info '    --genome    FILE       The whole genome sequence (fasta | fa | fna)'
+    log.info '    --index     FOLDER     Path to where the STAR index files are locaded'
+    log.info '    --genes     FILE       The genome annotation file (gtf)'
+    log.info '    --bind      FOLDER(S)  Paths to be passed onto the singularity image (Semi-colon separated)'
+    log.info '     -profile   SRTING     Executor to be used'
     log.info ''
     log.info "====================================\n"
     exit 1
@@ -34,10 +36,29 @@ if (params.help) {
  *  CHECK ALL USER INPUTS
  *  ======================================================================================================
  */
-if(params.data == null) {
+if (params.data == null) {
     exit 1, "\nPlease enter a directory with input FASTQ/FASTQ.GZ files."
 } else{
     data_path = file(params.data, type: 'dir')  // Path to where the input data is located (where fastq files are located).
+}
+
+switch ( params.filetype ) {
+case ['fastq','fq']:
+    ext = params.filetype
+    read_file_cmd = ''
+    break
+case ['fastq.gz','fq.gz']:
+    ext = params.filetype
+    read_file_cmd = '--readFilesCommand gunzip -c'
+    break
+case ['fastq.bz2','fq.bz2']:
+    ext = params.filetype
+    read_file_cmd = '--readFilesCommand bunzip2 -c'
+    break
+case null:
+    ext = 'fastq.gz'
+    read_file_cmd = '--readFilesCommand gunzip -c'
+    break
 }
 
 if(params.out == null) {
@@ -78,12 +99,14 @@ if(params.bind == null) {
 log.info "===================================="
 log.info "           nf-rnaSeqCount           "
 log.info "===================================="
-log.info "Input data          : $data_path"
-log.info "Output path         : $out_path"
-log.info "Genome              : $genome"
-log.info "Genome Index (STAR) : $index"
-log.info "Genome annotation   : $genes"
-log.info "Paths to bind       : $bind"
+log.info "Input data            : $data_path"
+log.info "Input file extension  : $ext"
+log.info "STAR readFile command : $read_file_cmd"
+log.info "Output path           : $out_path"
+log.info "Genome                : $genome"
+log.info "Genome Index (STAR)   : $index"
+log.info "Genome annotation     : $genes"
+log.info "Paths to bind         : $bind"
 log.info "====================================\n"
 //
 //
@@ -91,33 +114,33 @@ log.info "====================================\n"
  *  PIPELINE START
  *  ======================================================================================================
  */
-// Create output directory
+// CREATE OUTPUT DIRECTORY
 out_path.mkdir()
 
-// Get input reads
-read_pair = Channel.fromFilePairs("${data_path}/*R[1,2].fq", type: 'file') 
+// GET INPUT READS
+read_pair = Channel.fromFilePairs("${data_path}/*{R,read}[1,2].${ext}", type: 'file') 
 .ifEmpty { error "ERROR - Data input: \nOooops... Cannot find any '.fastq' or '.fq' files in ${data_path}. Please specify a folder with '.fastq' or '.fq' files."}
 
 
-// 1. Align reads to reference genome
+// 1. ALIGN READS TO REFERENCE GENOME
 process runSTAR_process {
     cpus 6
-    memory '40 GB'
-    time '10h'
+    memory '60 GB'
+    time '20h'
     scratch '$HOME/tmp'
     tag { sample }
-    publishDir "$out_path/${sample}", mode: 'copy', overwrite: false
+    publishDir "$out_path/${sample}", mode: 'copy', overwrite: false, pattern: "${sample}*.{out,tab}"
 
     input:
     set sample, file(reads) from read_pair
     
     output:
-    set sample, "${sample}*" into star_results
+    set sample, file("${sample}*.{out,tab}") into star_results
     set sample, file("${sample}_Aligned.sortedByCoord.out.bam") into bams_htseqCounts, bams_featureCounts
     
     """
     STAR --runMode alignReads \
-        --genomeDir ${index} \
+        --genomeDir ${index} ${read_file_cmd} \
         --readFilesIn ${reads.get(0)} ${reads.get(1)} \
         --runThreadN 5 \
         --outSAMtype BAM SortedByCoordinate \
@@ -125,11 +148,12 @@ process runSTAR_process {
     """
 }
 
-// 2. Get raw counts using HTSeq-count
+// 2. GET RAW COUNTS USING HTSEQ-COUNT
+// 2a - Use HTSeqCount to get the raw gene counts
 process runHTSeqCount_process {
-    cpus 4
-    memory '5 GB'
-    time '10h'
+    cpus 6
+    memory '60 GB'
+    time '20h'
     scratch '$HOME/tmp'
     tag { sample }
     publishDir "$out_path/htseqCounts", mode: 'copy', overwrite: false
@@ -139,6 +163,7 @@ process runHTSeqCount_process {
 
     output:
     set sample, "${sample}.txt" into htseqCounts
+    set sample, "${sample}.txt" into htseqCounts_cleanup
     
     """
     htseq-count -f bam \
@@ -152,16 +177,44 @@ process runHTSeqCount_process {
     """
 }
 
-// 3a. Get all the bam file locations to process with featureCounts
+// 2b - Collect files for HTSeq cleanup
+htseqCounts_cleanup
+.collectFile () { item -> [ 'cleanup_htseqcounts.txt', "${item.get(1)}" + '\n' ] }
+.set { list_htseqcounts }
+
+// 2c - Cleanup HTSeqCounts
+process runCleanHTSeqCounts_process {
+    cpus 1
+    memory '10 GB'
+    time '5h'
+    scratch '$HOME/tmp'
+    tag { 'HTSEqCounts Cleanup' }
+    publishDir "$out_path/htseqCounts", mode: 'copy', overwrite: false
+    
+    input:
+    file(file_list) from list_htseqcounts
+
+    output:
+    file(out_file) into htseqCounts_cleaned
+
+    shell:
+    in_file = "${file_list}"
+    out_file = "gene_counts_final.txt"
+    template "clean_htseqCounts.sh"
+}
+
+
+// 3. GET RAW COUNTS USING FEATURECOUNTS
+// 3a - Get all the bam file locations to process with featureCounts
 bams_featureCounts
 .collectFile () { item -> [ 'sample_bams.txt', "${item.get(1)}" + ' ' ] }
 .set { sample_bams }
 
-// 3. Get raw counts using featureCounts
+// 3b - Use featureCounts to get raw gene counts
 process runFeatureCounts_process {
     cpus 6
-    memory '5 GB'
-    time '10h'
+    memory '60 GB'
+    time '20h'
     scratch '$HOME/tmp'
     tag { 'featureCounts - ALL' }
     publishDir "$out_path/featureCounts", mode: 'copy', overwrite: false
@@ -171,6 +224,7 @@ process runFeatureCounts_process {
 
     output:
     file('gene_counts*') into featureCounts
+    file('gene_counts.txt') into featureCounts_raw
     
     """
     featureCounts -p -B -C -P -J -s 2 \
@@ -182,30 +236,50 @@ process runFeatureCounts_process {
         -T 5 \
         -o gene_counts.txt \
         `< ${samples}`
-    sed '1d' | cut -f 1,7- gene_counts.txt > tmp_genes.txt
-    ./clean_featureCounts.sh
     """
 }
 
-// 4a. Collect files for STAR QC
+// 3c - Cleanup featureCounts gene counts
+process runCleanFeatureCounts_process {
+    cpus 1
+    memory '10 GB'
+    time '5h'
+    scratch '$HOME/tmp'
+    tag { 'featureCounts Cleanup' }
+    publishDir "$out_path/featureCounts", mode: 'copy', overwrite: false
+    
+    input:
+    file(raw_counts) from featureCounts_raw
+
+    output:
+    file(out_file) into featureCounts_cleaned
+
+    shell:
+    in_file = "${raw_counts}"
+    out_file = "gene_counts_final.txt"
+    template "clean_featureCounts.sh"
+}
+
+// 4. DO QC FOR ALL THE OUTPUT FILES 
+// 4a - Collect files for STAR QC
 star_results.collectFile () { item -> [ 'qc_star.txt', "${item.get(1).find { it =~ 'Log.final.out' } }" + ' ' ] }
 .set { qc_star }
 
-// 4b. Collect files for HTSeq QC
+// 4b - Collect files for HTSeq QC
 htseqCounts
 .collectFile () { item -> [ 'qc_htseqcounts.txt', "${item.get(1)}" + ' ' ] }
 .set { qc_htseqcounts }
 
-// 4c. Collect files for featureCounts QC
+// 4c - Collect files for featureCounts QC
 featureCounts
 .collectFile () { item -> [ 'qc_featurecounts.txt', "${item.find { it =~ 'txt.summary' } }" + ' ' ] }
 .set { qc_featurecounts }
 
-// 4. Get QC for STAR, HTSeqCounts and featureCounts
+// 4d Get QC for STAR, HTSeqCounts and featureCounts
 process runMultiQC_process {
     cpus 1
-    memory '5 GB'
-    time '10h'
+    memory '10 GB'
+    time '5h'
     scratch '$HOME/tmp'
     tag { 'MultiQC - ALL' }
     publishDir "$out_path/report_QC", mode: 'copy', overwrite: false
@@ -229,7 +303,7 @@ process runMultiQC_process {
  *  ======================================================================================================
  */
 workflow.onComplete {
-    println "===================================="
+    println "\n\n===================================="
     println "Pipeline execution summary:"
     println "===================================="
     println "Execution command   : ${workflow.commandLine}"
