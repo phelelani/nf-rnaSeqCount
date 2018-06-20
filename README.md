@@ -10,6 +10,7 @@ To use the rnaSeqCount pipeline, the following dependencies are required:
 ### 1.1. Softwares
 - [x] [Nextflow](https://www.nextflow.io/)
 - [x] [Singularity](http://singularity.lbl.gov/)
+- [x] [R](https://www.r-project.org/)
 
 ### 1.2.  Singularity Containers
 - [x] [STAR](https://github.com/alexdobin/STAR) - ```shub://phelelani/nf-rnaSeqCount:star```
@@ -33,20 +34,15 @@ The ```nf-rnaSeqCount``` pipeline can be obtain using any of the following metho
 - [x] ```nextflow clone phelelani/nf-rnaSeqCount <target-dir>```
 
 # 3. Generating genome indexes.
-To generate the ```STAR``` and ```bowtie2``` indexes for the reference genome, run the following commands:
+To generate the ```STAR``` and ```bowtie2``` indexes for the reference genome, run the following commands inside the downloaded nf-rnaSeqCount repository:
 ### 3.1. ```STAR``` index
 ```
-singularity exec --cleanenv containers/phelelani-rnaSeqCount-master-star.simg \
-    STAR --runThreadN 4 \
-    --runMode genomeGenerate \
-    --genomeDir <> \
-    --genomeFastaFiles <>
+sh scripts/generate_star_index.sh "/path/to/genome.fa"
 ```
 
 ### 3.2. ```bowtie2``` index
 ```
-singularity exec --cleanenv containers/phelelani-rnaSeqCount-master-star.simg \
-    bowtie2-build </path/to/genome.fa> </path/to/genome>
+sh scripts/generate_bowtie_index.sh "/path/to/genome.fa"
 ```
 
 # 4. Pipeline Execution
