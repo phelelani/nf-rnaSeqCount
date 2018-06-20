@@ -54,23 +54,39 @@ The ```nf-rnaSeqCount``` pipeline can be run in one of two ways:
 
 ### 4.1. Directly from the command line by supplying the required parameters
 ```
-nextflow run main.nf --data '/path/to/data' \
-    --out '/path/to/output' \
-    --genome '/path/to/genome.fa' \
-    --index '/path/to/STARIndex' \
-    --genes '/path/to/genes.gtf' \
-    --bind '/path/to/bind;/another/path/to/bind'
+nextflow run main.nf \
+    --data "/path/to/data" \
+    --filetype "filetype"
+    --out "/path/to/output" \
+    --genome "/path/to/genome.fa" \
+    --index "/path/to/STARIndex" \
+    --genes "/path/to/genes.gtf" \
+    --bind "/path/to/bind_1;/another/path/to/bind_2"
 ```
 ### 4.2. By editing the ```parameters.config``` file and specifying the parameters
 Edit parameters.config:
 ```
+/*
+ *  USE THIS FILE TO SPECIFY YOUR PARAMETERS. ALLOWED PARAMETERS ARE AS FOLLOWS:
+ *  ============================================================================
+ *  data      : Path to where the input data is located (where fastq files are located).
+ *  filetype  : Extension of the input FASTQ files (fastq | fq | fastq.gz | fq.gz | fastq.bz2 | fq.bz2).
+ *  out       : Path to where the output should be directed (will be created if it does not exist).
+ *  genome    : The whole genome sequence (fasta | fa | fna).
+ *  index     : Path to where the STAR index files are locaded.
+ *  genes     : The genome annotation file (gtf).
+ *  bind      : Paths to be passed onto the singularity image (Semi-colon separated).
+ *  help      : Print out help menu. Passed as "--help" to the "main.nf" script for detailed information
+ */
 params {
-  data     = '/path/to/data'                       // Path to where the input data is located (where fastq files are located).
-  out      = '/path/to/output'                     // Path to where the output should be directed.
-  genome   = '/path/to/genome.fa'                  // The whole genome sequence (fasta | fa | fna).
-  index    = '/path/to/STARIndex'                  // Path to where the STAR index files are locaded.
-  genes    = '/path/to/genes.gtf'                  // The genome annotation file.
-  bind     = '/path/to/bind;/another/path/to/bind' // Paths to be passed onto the singularity image (Semi-colon separated).
+    data     = "/path/to/data"
+    filetype = "fastq.gz"
+    out      = "/path/to/output"
+    genome   = "/path/to/genome.fa'"  
+    index    = "/path/to/STARIndex"
+    genes    = "/path/to/genes.gtf" 
+    bind     = "/path/to/bind_1;/path/to/bind_2"
+    help     = null
 }
 ```
 
