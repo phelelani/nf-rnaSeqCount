@@ -2,7 +2,7 @@
 *nf-rnaSeqCount* is a [Nextflow](http://nextflow.io/) pipeline for obtaining raw read counts for RNA-seq data using a given reference genome and annotation. This pipeline 
 
 <p align="center">
-  <img height="680" src="nf-rnaSeqCount.png">
+  <img height="700" src="nf-rnaSeqCount.png">
 </p>
 
 # 1. Pipeline Dependencies
