@@ -25,7 +25,7 @@ To use the rnaSeqCount pipeline, the following dependencies are required:
 # 2. Optaining the ```nf-rnaSeqCount``` pipeline
 The ```nf-rnaSeqCount``` pipeline can be obtain using any of the following methods:
 
-### 2.1. Using the ```git``` command:
+### 2.1. Using the ```git``` command (recommended):
 - [x] ```git clone https://github.com/phelelani/nf-rnaSeqCount.git```
 
 ### 2.2. Using the ```nextflow``` command:
@@ -48,18 +48,7 @@ sh scripts/generate_bowtie_index.sh "/path/to/genome.fa"
 # 4. Pipeline Execution
 The ```nf-rnaSeqCount``` pipeline can be run in one of two ways:
 
-### 4.1. Directly from the command line by supplying the required parameters
-```
-nextflow run main.nf \
-    --data "/path/to/data" \
-    --filetype "filetype"
-    --out "/path/to/output" \
-    --genome "/path/to/genome.fa" \
-    --index "/path/to/STARIndex" \
-    --genes "/path/to/genes.gtf" \
-    --bind "/path/to/bind_1;/another/path/to/bind_2"
-```
-### 4.2. By editing the ```parameters.config``` file and specifying the parameters
+### 4.1. By editing the ```parameters.config``` file and specifying the parameters (recommended)
 Edit parameters.config:
 ```
 /*
@@ -89,6 +78,18 @@ params {
 Then run the pipeline:
 ```
 nextflow run main.nf
+```
+
+### 4.2. Directly from the command line by supplying the required parameters
+```
+nextflow run main.nf \
+    --data "/path/to/data" \
+    --filetype "filetype"
+    --out "/path/to/output" \
+    --genome "/path/to/genome.fa" \
+    --index "/path/to/STARIndex" \
+    --genes "/path/to/genes.gtf" \
+    --bind "/path/to/bind_1;/another/path/to/bind_2"
 ```
 
 # References
