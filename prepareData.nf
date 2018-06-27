@@ -27,7 +27,6 @@ def checkKrakenDir() {
     return out_path
 }
 
-
 switch (params.mode) {
     case ['getContainers']:
         link_base = "shub://phelelani/nf-rnaSeqCount:"
