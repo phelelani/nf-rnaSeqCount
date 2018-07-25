@@ -34,22 +34,35 @@ The ```nf-rnaSeqCount``` pipeline can be obtain using any of the following metho
 - [x] ```nextflow clone phelelani/nf-rnaSeqCount <target-dir>```
 
 # 3. Generating genome indexes.
-To generate the ```STAR``` and ```bowtie2``` indexes for the reference genome, run the following commands inside the downloaded nf-rnaSeqCount repository:
-### 3.1. ```STAR``` index
+To generate the ```STAR``` and ```bowtie2``` indexes for the reference genome, the ```Singularity``` containers first need to be downloaded from [Singularity Hub](ttps://www.singularity-hub.org). The ```prepareData.nf``` script can be used to download and prepare data (generate indexes) to be be used with the ```nf-rnaSeqCount``` pipeline. The ```prepareData.nf``` can be run in three different modes:
+- [x] ```getContainers```: for downloading the required ```Singularity``` containers.
+- [x] ```generateStarIndex```: for generating ```STAR``` indexes.
+- [x] ```generateBowtieIndex```: for generating ```bowtie2``` indexes.
+
+To generate the genome indexes, run the following commands in the pipeline directory:
+
+### 3.1 Download ```Singularity``` containers:
 ```
-sh scripts/generate_star_index.sh "/path/to/genome.fa"
+nextflow run prepareData.nf --mode getContainers -profile pbsPrepare
 ```
 
-### 3.2. ```bowtie2``` index
+### 3.2. Generate ```STAR``` index
 ```
-sh scripts/generate_bowtie_index.sh "/path/to/genome.fa"
+nextflow run prepareData.nf --mode generateStarIndex -profile pbsPrepare
 ```
+
+### 3.3. Generate ```bowtie2``` index
+```
+nextflow run prepareData.nf --mode generateBowtieIndex -profile pbsPrepare
+```
+
+NB: The ```-profile``` option can either be one of depending on the scheduler.
 
 # 4. Pipeline Execution
 The ```nf-rnaSeqCount``` pipeline can be run in one of two ways:
 
 ### 4.1. By editing the ```parameters.config``` file and specifying the parameters (recommended)
-Edit parameters.config:
+Edit ```main.config```:
 ```
 /*
  *  USE THIS FILE TO SPECIFY YOUR PARAMETERS. ALLOWED PARAMETERS ARE AS FOLLOWS:
@@ -65,9 +78,9 @@ Edit parameters.config:
  */
 params {
     data      = "/path/to/data"
-    filetype  = "fastq.gz"
     out       = "/path/to/output"
-    genome    = "/path/to/genome.fa'"  
+    filetype  = "fastq.gz"
+    genome    = "/path/to/genome.fa"  
     index     = "/path/to/STARIndex"
     genes     = "/path/to/genes.gtf" 
     bind      = "/path/to/bind_1;/path/to/bind_2"
