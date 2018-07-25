@@ -1,5 +1,11 @@
 #!/usr/bin/env nextflow
 
+/* PARAMETERS NEEDED
+ --genome
+ --genes
+ --mode < getContainers | generateStarIndex | generateBowtieIndex >
+*/
+
 def checkGenome() {
     if(params.genome == null) {
         exit 1, "Please provide a FASTA sequence of the reference genome."
@@ -16,15 +22,6 @@ def checkGenes() {
         genes = file(params.genes, type: 'file')  // The genome annotation file.
     }
     return genes
-}
-
-def checkKrakenDir() {
-    if(params.kraken_dir == null) {
-        exit 1, "Please provide a path to save the Kraken database"
-    } else{
-        out_path = file(params.kraken_dir, type: 'file') 
-    }
-    return out_path
 }
 
 switch (params.mode) {
@@ -106,28 +103,5 @@ switch (params.mode) {
         }   
     
         bowtie_index.subscribe { println it }
-        break
-
-    case ['generateKrakenDB']:
-        
-        checkKrakenDir()
-        
-        process generateKrakenDB {
-            cpus 7
-            memory '200 GB'
-            time '30h'
-            scratch '$HOME/tmp'
-            tag { "Generate Kraken DB" }
-            publishDir "$out_path", mode: 'copy', overwrite: true
-            
-            output:
-            file("*") into kraken_db
-        
-            """
-            kraken-build --standard --threads 6 --db kraken_std
-            """
-        }   
-
-        kraken_db.subscribe { println it }
         break
 }
