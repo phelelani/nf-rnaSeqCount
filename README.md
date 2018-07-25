@@ -13,10 +13,7 @@ To use the rnaSeqCount pipeline, the following dependencies are required:
 - [x] [R](https://www.r-project.org/)
 
 ### 1.2.  Singularity Containers
-- [x] [STAR](https://github.com/alexdobin/STAR) - ```shub://phelelani/nf-rnaSeqCount:star```
-- [x] [HTSeq-Counts](https://htseq.readthedocs.io/en/release_0.9.1/overview.html) - ```shub://phelelani/nf-rnaSeqCount:htseqcount```
-- [x] [featureCounts](http://subread.sourceforge.net/) - ```shub://phelelani/nf-rnaSeqCount:featurecounts```
-- [x] [MultiQC](http://multiqc.info/) - ```shub://phelelani/nf-rnaSeqCount:multiqc```
+- [x] https://www.singularity-hub.org/collections/770
 
 ### 1.3. Reference Genome and Indexes
 - [x] Reference Genome (.fa) and Genome Annotation (.gtf) files
