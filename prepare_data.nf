@@ -1,11 +1,12 @@
 #!/usr/bin/env nextflow
 
-/* PARAMETERS NEEDED
- --genome
- --genes
- --mode < getContainers | generateStarIndex | generateBowtieIndex >
+/* PARAMETERS NEEDED:
+ --genome  : Can be specified in prepareData.config
+ --genes   : Can be specified in prepareData.config
+ --bind    : Can be specified in prepareData.config
+ --mode    : < getContainers | generateStarIndex | generateBowtieIndex >
+ -profile  : < prepare | pbsPrepare >
 */
-
 def checkGenome() {
     if(params.genome == null) {
         exit 1, "Please provide a FASTA sequence of the reference genome."
