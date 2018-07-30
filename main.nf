@@ -126,7 +126,7 @@ read_pair = Channel.fromFilePairs("${data_path}/*{R,read}[1,2].${ext}", type: 'f
 process runSTAR_process {
     cpus 6
     memory '60 GB'
-    time '20h'
+    time '48h'
     scratch '$HOME/tmp'
     tag { sample }
     publishDir "$out_path/${sample}", mode: 'copy', overwrite: false, pattern: "${sample}*.{out,tab}"
@@ -153,7 +153,7 @@ process runSTAR_process {
 process runHTSeqCount_process {
     cpus 6
     memory '60 GB'
-    time '20h'
+    time '24h'
     scratch '$HOME/tmp'
     tag { sample }
     publishDir "$out_path/htseqCounts", mode: 'copy', overwrite: false
@@ -186,7 +186,7 @@ htseqCounts_cleanup
 process runCleanHTSeqCounts_process {
     cpus 1
     memory '10 GB'
-    time '5h'
+    time '12h'
     scratch '$HOME/tmp'
     tag { 'HTSEqCounts Cleanup' }
     publishDir "$out_path/htseqCounts", mode: 'copy', overwrite: false
@@ -214,7 +214,7 @@ bams_featureCounts
 process runFeatureCounts_process {
     cpus 6
     memory '60 GB'
-    time '20h'
+    time '24h'
     scratch '$HOME/tmp'
     tag { 'featureCounts - ALL' }
     publishDir "$out_path/featureCounts", mode: 'copy', overwrite: false
@@ -243,7 +243,7 @@ process runFeatureCounts_process {
 process runCleanFeatureCounts_process {
     cpus 1
     memory '10 GB'
-    time '5h'
+    time '12h'
     scratch '$HOME/tmp'
     tag { 'featureCounts Cleanup' }
     publishDir "$out_path/featureCounts", mode: 'copy', overwrite: false
