@@ -124,9 +124,9 @@ read_pair = Channel.fromFilePairs("${data_path}/*{R,read}[1,2].${ext}", type: 'f
 
 // 1. ALIGN READS TO REFERENCE GENOME
 process runSTAR_process {
-    cpus 6
-    memory '60 GB'
-    time '48h'
+    cpus 7
+    memory '40 GB'
+    time '24h'
     scratch '$HOME/tmp'
     tag { sample }
     publishDir "$out_path/${sample}", mode: 'copy', overwrite: false, pattern: "${sample}*.{out,tab}"
@@ -136,14 +136,14 @@ process runSTAR_process {
     
     output:
     set sample, file("${sample}*.{out,tab}") into star_results
-    set sample, file("${sample}_Aligned.sortedByCoord.out.bam") into bams_htseqCounts, bams_featureCounts
+    set sample, file("${sample}_Aligned.out.bam") into bams_htseqCounts, bams_featureCounts
     
     """
     STAR --runMode alignReads \
         --genomeDir ${index} ${read_file_cmd} \
         --readFilesIn ${reads.get(0)} ${reads.get(1)} \
-        --runThreadN 5 \
-        --outSAMtype BAM SortedByCoordinate \
+        --runThreadN 6 \
+        --outSAMtype BAM Unsorted \
         --outFileNamePrefix ${sample}_
     """
 }
@@ -151,8 +151,8 @@ process runSTAR_process {
 // 2. GET RAW COUNTS USING HTSEQ-COUNT
 // 2a - Use HTSeqCount to get the raw gene counts
 process runHTSeqCount_process {
-    cpus 6
-    memory '60 GB'
+    cpus 1
+    memory '8 GB'
     time '24h'
     scratch '$HOME/tmp'
     tag { sample }
@@ -167,7 +167,7 @@ process runHTSeqCount_process {
     
     """
     htseq-count -f bam \
-        -r pos \
+        -r name \
         -i gene_id \
         -a 10 \
         -s reverse \
@@ -185,8 +185,8 @@ htseqCounts_cleanup
 // 2c - Cleanup HTSeqCounts
 process runCleanHTSeqCounts_process {
     cpus 1
-    memory '10 GB'
-    time '12h'
+    memory '1 GB'
+    time '1h'
     scratch '$HOME/tmp'
     tag { 'HTSEqCounts Cleanup' }
     publishDir "$out_path/htseqCounts", mode: 'copy', overwrite: false
@@ -212,8 +212,8 @@ bams_featureCounts
 
 // 3b - Use featureCounts to get raw gene counts
 process runFeatureCounts_process {
-    cpus 6
-    memory '60 GB'
+    cpus 7
+    memory '8 GB'
     time '24h'
     scratch '$HOME/tmp'
     tag { 'featureCounts - ALL' }
@@ -233,7 +233,7 @@ process runFeatureCounts_process {
         -d 40 \
         -g gene_id \
         -a $genes \
-        -T 5 \
+        -T 6 \
         -o gene_counts.txt \
         `< ${samples}`
     """
@@ -242,8 +242,8 @@ process runFeatureCounts_process {
 // 3c - Cleanup featureCounts gene counts
 process runCleanFeatureCounts_process {
     cpus 1
-    memory '10 GB'
-    time '12h'
+    memory '1 GB'
+    time '1h'
     scratch '$HOME/tmp'
     tag { 'featureCounts Cleanup' }
     publishDir "$out_path/featureCounts", mode: 'copy', overwrite: false
@@ -278,8 +278,8 @@ featureCounts
 // 4d Get QC for STAR, HTSeqCounts and featureCounts
 process runMultiQC_process {
     cpus 1
-    memory '10 GB'
-    time '5h'
+    memory '2 GB'
+    time '1h'
     scratch '$HOME/tmp'
     tag { 'MultiQC - ALL' }
     publishDir "$out_path/report_QC", mode: 'copy', overwrite: false
