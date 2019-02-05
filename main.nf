@@ -124,8 +124,8 @@ read_pair = Channel.fromFilePairs("${data_path}/*{R,read}[1,2].${ext}", type: 'f
 
 // 1. ALIGN READS TO REFERENCE GENOME
 process runSTAR_process {
-    cpus 7
-    memory '40 GB'
+    cpus 13
+    memory '50 GB'
     time '24h'
     scratch '$HOME/tmp'
     tag { sample }
@@ -139,10 +139,11 @@ process runSTAR_process {
     set sample, file("${sample}_Aligned.out.bam") into bams_htseqCounts, bams_featureCounts
     
     """
+    /bin/hostname
     STAR --runMode alignReads \
         --genomeDir ${index} ${read_file_cmd} \
         --readFilesIn ${reads.get(0)} ${reads.get(1)} \
-        --runThreadN 6 \
+        --runThreadN 12 \
         --outSAMtype BAM Unsorted \
         --outFileNamePrefix ${sample}_
     """
@@ -212,7 +213,7 @@ bams_featureCounts
 
 // 3b - Use featureCounts to get raw gene counts
 process runFeatureCounts_process {
-    cpus 7
+    cpus 13
     memory '8 GB'
     time '24h'
     scratch '$HOME/tmp'
@@ -233,7 +234,7 @@ process runFeatureCounts_process {
         -d 40 \
         -g gene_id \
         -a $genes \
-        -T 6 \
+        -T 12 \
         -o gene_counts.txt \
         `< ${samples}`
     """
