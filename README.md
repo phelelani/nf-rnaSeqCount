@@ -7,6 +7,18 @@
 
 # 1. Pipeline Dependencies
 To use the rnaSeqCount pipeline, the following dependencies are required:
+### The data
+- [x] Download the mouse reference genome along with its annotation:
+```
+lftp -e 'pget -n10 ftp://ftp.ensembl.org/pub/release-68/fasta/mus_musculus/dna/Mus_musculus.GRCm38.68.dna.toplevel.fa.gz; bye'
+lftp -e 'pget -n10 ftp://ftp.ensembl.org/pub/release-68/gtf/mus_musculus/Mus_musculus.GRCm38.68.gtf.gz; bye'
+```
+
+- [x] Download RNA-seq test dataset from H3ABioNet:
+```
+for sample in sample{37..42}_R{1,2}.fastq.gz; do wget -c http://h3data.cbio.uct.ac.za/assessments/RNASeq/practice/dataset/$sample; done
+```
+
 ### 1.1. Softwares
 - [x] [Nextflow](https://www.nextflow.io/)
 - [x] [Singularity](http://singularity.lbl.gov/)
