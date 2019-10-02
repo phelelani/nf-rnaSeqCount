@@ -20,9 +20,11 @@ apt-get install -y openjdk-8-jre
 cd /opt \
     && wget https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.8.zip \
     && unzip fastqc_v0.11.8.zip \
-    && chmod 755 FastQC/fastqc \
-    && rm fastqc_v0.11.8.zip
+    && chmod 755 FastQC/fastqc
 
 %environment
 ## Add the paths to environment
 export PATH=/opt/FastQC:$PATH
+
+
+## && rm fastqc_v0.11.8.zip
