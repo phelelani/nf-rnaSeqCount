@@ -2,9 +2,9 @@ Bootstrap: docker
 From: ubuntu:16.04
 
 %labels
-    Maintainer Phelelani.Mpangase@wits.ac.za
+Maintainer Phelelani.Mpangase@wits.ac.za
     
-%post	       
+%post
 ### Updates and essentials
 apt-get update
 apt-get install -y build-essential
