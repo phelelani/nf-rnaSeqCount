@@ -6,7 +6,7 @@
    1. Installed softwares:
       - [`Nextflow`](https://www.nextflow.io/)
       - [`Singularity`](http://singularity.lbl.gov/)
-   2. Singularity containers (https://www.singularity-hub.org/collections/770) with the required applications/programs for executing the workflow:
+   2. `Singularity` [containers](https://www.singularity-hub.org/collections/770) with the required applications/programs for executing the workflow:
       - `nf-rnaSeqCount-fastqc.sif`
       - `nf-rnaSeqCount-featurecounts.sif`
       - `nf-rnaSeqCount-htseqcount.sif`
