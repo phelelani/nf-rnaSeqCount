@@ -52,6 +52,10 @@ nf-rnaSeqCount
   |--README.md                        ## Duh!
 ```
 
+***
+---
+
+
 ### 1.1. Download test datasets 
 NB: Skip this section if you have your own data to analyse using this workflow! 
 SAY SOMETHING ABOUT THE PRACTICE DATA!
