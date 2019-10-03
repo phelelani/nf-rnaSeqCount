@@ -17,18 +17,14 @@
    3. Reference genome, annotation and indexes
       - Reference genome (`.fa`/`.fasta`) and genome annotation (`.gtf`) files.
       - Reference genome indexes (`bowtie2` & `STAR` - see *1.3.* below on how to generate the indexes).
-      
 
 ---
-
 
 <p align="center">
   <img width="1000" src="nf-rnaSeqCount.png">
 </p>
 
-
 ---
-
 
 ## 1. Obtaining the `nf-rnaSeqCount` pipeline and preparing data
 First, you need to clone the `nf-rnaSeqCount` repository onto you machine. You can eisther use `git` or `nextflow` (see the two methods below). I recommend using `nextflow` and creating you own `config` file (will explain later) for executing the workflow in the directory of your choosing.
@@ -126,9 +122,7 @@ nextflow run main.nf -profile slurm --mode prep.STARIndex
 nextflow run main.nf -profile slurm --mode prep.BowtieIndex
 ```
 
-
 ---
-
 
 ## 2. Executing the main `nf-rnaSeqCount` pipeline
 
@@ -165,22 +159,24 @@ This step performs a Quality Check of the different pipeline steps that have bee
 nextflow run main.nf -profile slurm --mode run.MultiQC 
 ```
 
-
 ---
 
 
 ## 3. Explore `nf-rnaSeqCount` results
 
 ```
-- [1] Read QC (optional)         =>    `<results>/1_RQC`
-- [2] Read Trimming (optional)   =>    `<results>/2_Read_Trimming`
-- [3] Read Alignment             =>    `<results>/3_Read_Alignment`
-- [4] Variant Calling            =>    `<results>/4_Read_Counts`
-- [5] MultiQC                    =>    `<results>/5_MultiQC
-- [6] Workflow tracing           =>    `<results>/workflow-tracing
+- [1] Read QC (optional)         =>    `<output_directory>/1_RQC`
+- [2] Read Trimming (optional)   =>    `<output_directory>/2_Read_Trimming`
+- [3] Read Alignment             =>    `<output_directory>/3_Read_Alignment`
+- [4] Read Counting              =>    `<output_directory>/4_Read_Counts`
+- [5] MultiQC                    =>    `<output_directory>/5_MultiQC
+- [6] Workflow tracing           =>    `<output_directory>/workflow-tracing
 ```
-In each of these folders, a sub-folder "`workflow_report`"  is created. It  contains 4 different files (`h3avarcall_report.html`, `h3avarcall_timeline.html`, `h3avarcall_workflow.dot` and `h3avarcall_trace.txt`) containing detailed information on the resources (CPU, MEMORY and TIME) usage of each process in the different pipeline steps. <br/> 
-The `results` directory structure within `h3avarcall` repository can be summarized as below:
+In addition to the 5 directories created for each step in the results directory, a directory `workflow-tracing` is created to monitor the resources used in each step. This directory will contain 4 files for each step (--mode) of the workflow:
+- `nf-rnaSeqCount_<mode>_report.html`
+- `nf-rnaSeqCount_<mode>_timeline.html`
+- `nf-rnaSeqCount_<mode>_trace.txt`
+These files contain detailed information on the resources (CPU, MEMORY and TIME) usage of each of the process in the different pipeline steps. The `<output_directory>` directory structure is summarized below:
 
 ```bash
 <output_directory>
