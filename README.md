@@ -34,10 +34,10 @@
 First, you need to clone the `nf-rnaSeqCount` repository onto you machine. You can eisther use `git` or `nextflow` (see the two methods below). I recommend using `nextflow` and creating you own `config` file (will explain later) for executing the workflow in the directory of your choosing.
 ```bash
 ## Using nextflow
-nextflow pull https://github.com/h3abionet/h3avarcall.git
+nextflow pull https://github.com/phelelani/nf-rnaSeqCount.git
 
 ## Using git
-git clone https://github.com/h3abionet/h3avarcall.git
+git clone https://github.com/phelelani/nf-rnaSeqCount.git
 ```
 Content of the repository:
 ```bash
