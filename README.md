@@ -1,4 +1,7 @@
 # nf-rnaSeqCount
+
+[![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/770)
+
 ```nf-rnaSeqCount``` is a [Nextflow](http://nextflow.io/) pipeline for obtaining raw read counts for RNA-seq data using a given reference genome and annotation. The 
 
 <p align="center">
