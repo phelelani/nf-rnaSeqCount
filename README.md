@@ -57,7 +57,7 @@ nf-rnaSeqCount
   |--README.md                        ## Duh!
 ```
 
-### 1.1. Download test datasets 
+### 1.1. Download test datasets (optional)
 *__NB__: Skip this section if you have your own data to analyse using this workflow! This section is only for getting data to practice using the `nf-rnaSeqCount` workflow!* 
 
 - [x] Download and decompress the mouse reference genome along with its annotation:
@@ -176,6 +176,7 @@ In addition to the 5 directories created for each step in the results directory,
 - `nf-rnaSeqCount_<mode>_report.html`
 - `nf-rnaSeqCount_<mode>_timeline.html`
 - `nf-rnaSeqCount_<mode>_trace.txt`
+
 These files contain detailed information on the resources (CPU, MEMORY and TIME) usage of each of the process in the different pipeline steps. The `<output_directory>` directory structure is summarized below:
 
 ```bash
