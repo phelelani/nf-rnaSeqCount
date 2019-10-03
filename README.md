@@ -62,8 +62,8 @@ nf-rnaSeqCount
 ```
 
 ### 1.1. Download test datasets 
-NB: Skip this section if you have your own data to analyse using this workflow! 
-SAY SOMETHING ABOUT THE PRACTICE DATA!
+*__NB__: Skip this section if you have your own data to analyse using this workflow! This section is only for getting data to practice using the `nf-rnaSeqCount` workflow!* 
+
 - [x] Download the mouse reference genome along with its annotation:
 ```
 lftp -e 'pget -n10 ftp://ftp.ensembl.org/pub/release-68/fasta/mus_musculus/dna/Mus_musculus.GRCm38.68.dna.toplevel.fa.gz; bye'
