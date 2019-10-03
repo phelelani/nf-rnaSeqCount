@@ -2,10 +2,10 @@
 
 [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/770)
 
-`nf-rnaSeqCount` is a [Nextflow](http://nextflow.io/) pipeline for obtaining raw read counts for RNA-seq data using a given reference genome and annotation. To use the `nf-rnaSeqCount` pipeline, the following dependencies are required:
+`nf-rnaSeqCount` is a [`Nextflow`](http://nextflow.io/) pipeline for obtaining raw read counts for RNA-seq data using a given reference genome and annotation. To use the `nf-rnaSeqCount` pipeline, the following dependencies are required:
    1. Installed softwares:
-      - [Nextflow](https://www.nextflow.io/)
-      - [Singularity](http://singularity.lbl.gov/)
+      - [`Nextflow`](https://www.nextflow.io/)
+      - [`Singularity`](http://singularity.lbl.gov/)
    2. Singularity containers (https://www.singularity-hub.org/collections/770) with the required applications/programs for executing the workflow:
       - `nf-rnaSeqCount-fastqc.sif`
       - `nf-rnaSeqCount-featurecounts.sif`
