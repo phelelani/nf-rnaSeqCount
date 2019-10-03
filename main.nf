@@ -281,7 +281,7 @@ switch (mode) {
         //
     case ['prep.Containers']: // <<<<<< WORKS ALL GOOD HERE!
         base = "shub://phelelani/nf-rnaSeqCount:"
-        images = Channel.from( ["${base}star", "${base}htseqcount", "${base}featurecounts", "${base}multiqc", "${base}trinity"] )
+        images = Channel.from( ["${base}star", "${base}htseqcount", "${base}featurecounts", "${base}multiqc", "${base}trinity", "${base}fastqc", "${base}trimmomatic"] )
         
         process run_DownloadContainers {
             label 'mini'
@@ -300,7 +300,7 @@ switch (mode) {
             """
         }
 
-        // containers.subscribe { println "${it}" }
+        containers.subscribe { println "${it}" }
         break
         // ==========
         
@@ -420,7 +420,7 @@ switch (mode) {
         process run_STAR {
             label 'maxi'
             tag { sample }
-            publishDir "${align_dir}/${sample}", mode: 'copy', overwrite: true
+            publishDir "${align_dir}", mode: 'copy', overwrite: true
 
             input:
             set sample, file(reads) from read_pairs
@@ -562,7 +562,7 @@ switch (mode) {
             file('*') into multiQC
             
             """
-            /home/phelelani/.local/bin/multiqc ${out_dir} --force
+            multiqc ${out_dir} --force
             """
         }
 
