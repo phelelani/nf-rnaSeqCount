@@ -12,6 +12,10 @@
    3. Reference Genome and Indexes
       - Reference genome (`.fa`/`.fasta`) and genome annotation (`.gtf`) files.
       - Reference genome indexes (`bowtie2` & `STAR` - see *1.3.* below on how to generate the indexes).
+      
+
+<hr />
+
 
 <p align="center">
   <img width="1000" src="nf-rnaSeqCount.png">
