@@ -21,6 +21,10 @@
   <img width="1000" src="nf-rnaSeqCount.png">
 </p>
 
+---
+
+***
+
 ## 1. Obtaining the `nf-rnaSeqCount` pipeline and preparing data
 First, you need to clone the `nf-rnaSeqCount` repository onto you machine. You can eisther use `git` or `nextflow` (see the two methods below). I recommend using `nextflow` and creating you own `config` file (will explain later) for executing the workflow in the directory of your choosing.
 ```bash
