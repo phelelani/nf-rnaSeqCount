@@ -53,8 +53,6 @@ nf-rnaSeqCount
 ```
 
 ***
----
-
 
 ### 1.1. Download test datasets 
 NB: Skip this section if you have your own data to analyse using this workflow! 
