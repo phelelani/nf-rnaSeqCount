@@ -14,16 +14,16 @@
       - Reference genome indexes (`bowtie2` & `STAR` - see *1.3.* below on how to generate the indexes).
       
 
-<hr />
+---
 
 
 <p align="center">
   <img width="1000" src="nf-rnaSeqCount.png">
 </p>
 
+
 ---
 
-***
 
 ## 1. Obtaining the `nf-rnaSeqCount` pipeline and preparing data
 First, you need to clone the `nf-rnaSeqCount` repository onto you machine. You can eisther use `git` or `nextflow` (see the two methods below). I recommend using `nextflow` and creating you own `config` file (will explain later) for executing the workflow in the directory of your choosing.
@@ -55,10 +55,6 @@ nf-rnaSeqCount
   |--nextfnf-rnaSeqCount.png          ## Pipeline 
   |--README.md                        ## Duh!
 ```
-
-
-<hr />
-
 
 ### 1.1. Download test datasets 
 NB: Skip this section if you have your own data to analyse using this workflow! 
@@ -122,6 +118,10 @@ nextflow run main.nf -profile slurm --mode prep.STARIndex
 nextflow run main.nf -profile slurm --mode prep.BowtieIndex
 ```
 
+
+---
+
+
 ## 2. Executing the main `nf-rnaSeqCount` pipeline
 
 ### 2.1. Read QC (optional): <br/>
@@ -156,6 +156,10 @@ This step performs a Quality Check of the different pipeline steps that have bee
 ```bash
 nextflow run main.nf -profile slurm --mode run.MultiQC 
 ```
+
+
+---
+
 
 ## 3. Explore `nf-rnaSeqCount` results
 
@@ -220,3 +224,6 @@ h3avarcall
   |  |--<There's a lot of folders here! Lets not worry about them for today!>
 ```
 ##We're working on further improving the pipleine and the associated documentation, feel free to share comments and suggestions!
+
+
+---
