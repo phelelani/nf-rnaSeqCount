@@ -97,7 +97,7 @@ if (params.data == null) {
 
 // USER PARAMETER INPUT: OUTPUT DIRECTORY
 if(params.out == null) {
-    out_dir = file(params.out, type: 'dir')
+    out_dir = file("${baseDir}/resultsf-rnaSeqCount", type: 'dir')
 } else{
     out_dir = file(params.out, type: 'dir')
 }
@@ -143,7 +143,7 @@ if(params.singleEnd == null && params.pairedEnd == null) {
 } else {}
 
 // USER PARAMETER INPUT: PATHS TO BE BINDED TO THE IMAGE
-bind_dir      = [params.data, params.out, new File(params.genome).getParent(), new File(params.genes).getParent()]
+bind_dir      = [params.data, params.out, params.genome.split('/')[0..-2].join('/'), params.genes.split('/')[0..-2].join('/')]
     .unique()
     .collect { it -> "-B ${it}"}
     .join("\n" + ' '.multiply(26))
@@ -305,30 +305,30 @@ switch (mode) {
         // ==========
         
         //
-    case ['prep.STARIndex']: /// <<<<<<< WORKS ALL GOOD HERE!
-        process run_GenerateSTARIndex {
-            label 'maxi'
-            tag { "Generate Star Index" }
-            publishDir "$index_dir", mode: 'copy', overwrite: true
+    // case ['prep.STARIndex']: /// <<<<<<< WORKS ALL GOOD HERE!
+    //     process run_GenerateSTARIndex {
+    //         label 'maxi'
+    //         tag { "Generate Star Index" }
+    //         publishDir "$index_dir", mode: 'copy', overwrite: true
             
-            output:
-            set val("starIndex"), file("*") into star_index
+    //         output:
+    //         set val("starIndex"), file("*") into star_index
             
-            """
-            STAR --runThreadN ${task.cpus} \
-                --runMode genomeGenerate \
-                --genomeDir . \
-                --genomeFastaFiles ${genome} \
-                --sjdbGTFfile ${genes} \
-                --sjdbOverhang 99
-            """
-        }
+    //         """
+    //         STAR --runThreadN ${task.cpus} \
+    //             --runMode genomeGenerate \
+    //             --genomeDir . \
+    //             --genomeFastaFiles ${genome} \
+    //             --sjdbGTFfile ${genes} \
+    //             --sjdbOverhang 99
+    //         """
+    //     }
 
-        star_index.subscribe { println "${it}" }
-        break
-        // ==========
+    //     star_index.subscribe { println "${it}" }
+    //     break
+    //     // ==========
         
-        //
+    //     //
     case ['prep.BowtieIndex']: // <<<<<< WORKS! ALL GOOD
         process run_GenerateBowtie2Index {
             label 'maxi'
