@@ -305,30 +305,30 @@ switch (mode) {
         // ==========
         
         //
-    // case ['prep.STARIndex']: /// <<<<<<< WORKS ALL GOOD HERE!
-    //     process run_GenerateSTARIndex {
-    //         label 'maxi'
-    //         tag { "Generate Star Index" }
-    //         publishDir "$index_dir", mode: 'copy', overwrite: true
+    case ['prep.STARIndex']: /// <<<<<<< WORKS ALL GOOD HERE!
+        process run_GenerateSTARIndex {
+            label 'maxi'
+            tag { "Generate Star Index" }
+            publishDir "$index_dir", mode: 'copy', overwrite: true
             
-    //         output:
-    //         set val("starIndex"), file("*") into star_index
+            output:
+            set val("starIndex"), file("*") into star_index
             
-    //         """
-    //         STAR --runThreadN ${task.cpus} \
-    //             --runMode genomeGenerate \
-    //             --genomeDir . \
-    //             --genomeFastaFiles ${genome} \
-    //             --sjdbGTFfile ${genes} \
-    //             --sjdbOverhang 99
-    //         """
-    //     }
+            """
+            STAR --runThreadN ${task.cpus} \
+                --runMode genomeGenerate \
+                --genomeDir . \
+                --genomeFastaFiles ${genome} \
+                --sjdbGTFfile ${genes} \
+                --sjdbOverhang 99
+            """
+        }
 
-    //     star_index.subscribe { println "${it}" }
-    //     break
-    //     // ==========
+        star_index.subscribe { println "${it}" }
+        break
+        // ==========
         
-    //     //
+        //
     case ['prep.BowtieIndex']: // <<<<<< WORKS! ALL GOOD
         process run_GenerateBowtie2Index {
             label 'maxi'
@@ -350,26 +350,26 @@ switch (mode) {
 
         // MAIN WORKFLOW - STEP 1 (OPTIONAL): PERFORM QC ON INPUT FASTQ FILES!
     case['run.ReadQC']: // wWORKS FINE!
-        process run_QualityChecks {
-            label 'midi'
-            tag { sample }
-            publishDir "${qc_dir}", mode: 'copy', overwrite: true
+        // process run_QualityChecks {
+        //     label 'midi'
+        //     tag { sample }
+        //     publishDir "${qc_dir}", mode: 'copy', overwrite: true
             
-            input:
-            set sample, file(reads) from read_pairs
+        //     input:
+        //     set sample, file(reads) from read_pairs
             
-            output:
-            set sample, file("${sample}*.html") into qc_html
-            set sample, file("${sample}*.zip") into qc_multiqc
+        //     output:
+        //     set sample, file("${sample}*.html") into qc_html
+        //     set sample, file("${sample}*.zip") into qc_multiqc
 
-            """
-            fastqc ${reads.get(0)} ${reads.get(1)} \
-                --threads ${task.cpus} \
-                --noextract
-            """
-        }
+        //     """
+        //     fastqc ${reads.get(0)} ${reads.get(1)} \
+        //         --threads ${task.cpus} \
+        //         --noextract
+        //     """
+        // }
 
-        qc_html.subscribe { println "${it}" }
+        // qc_html.subscribe { println "${it}" }
         break
         // --------------------
 
