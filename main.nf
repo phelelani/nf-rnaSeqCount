@@ -97,7 +97,7 @@ if (params.data == null) {
 
 // USER PARAMETER INPUT: OUTPUT DIRECTORY
 if(params.out == null) {
-    out_dir = file("${baseDir}/resultsf-rnaSeqCount", type: 'dir')
+    out_dir = file("${PWD}/resultsf-rnaSeqCount", type: 'dir')
 } else{
     out_dir = file(params.out, type: 'dir')
 }
@@ -287,7 +287,7 @@ switch (mode) {
             label 'mini'
             scratch '$HOME/tmp'
             tag { "Downloading: ${link}" }
-            publishDir "$baseDir/containers", mode: 'copy', overwrite: true
+            publishDir "$PWD/containers", mode: 'copy', overwrite: true
             
             input:
             each link from images
