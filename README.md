@@ -77,33 +77,6 @@ nextflow run nf-rnaSeqCount -profile slurm --mode prep.Containers
 ```
 
 ### 1.3. Generating genome indexes.
-The only file that you should edit is the `main.config` file. I recommend creating you own `config` file using the template below:
-```groovy
-/*==================================================================================================
- * THIS FILE IS USED TO SPECIFY INPUT, OUTPUTS AND PARAMETERS. THE FOLLOWING OPTIONS ARE THE ALLOWED:
- * ==================================================================================================
- * data         : Path to where the data is (FASTQ files).
- * out          : Path to store output results.
- * bundle       : GATK-b37-bundle list file.
- * mode         : Worflow step to perform. Can be any of [ do.GetContainers | do.GenomeIndexing | do.QC | do.ReadTrimming | do.ReadAlignment | do.VarianCalling | do.VariantFiltering | do.MultiQC].
- * trim         : Trimming options for Trimmomatic.
- * resources    : Location of the GATK-b37-bundle folder.
- * from         : pipeline step to resume pipeline from. Can be any of [ do.QC | do.ReadTrimming | do.ReadAlignment | do.VarianCalling | do.VariantFiltering ].
- * params.help  : Print help menu.
- * ==================================================================================================
- * BELOW ARE THE DEFAULT PARAMETERS! YOU'RE MORE THAN WELCOME TO CHANGE AS DESIRED!
- * ==================================================================================================
- */
-
-params {
-    data         = "$baseDir/data"
-    out          = "$baseDir/results"
-    mode         = "do.QC"
-    trim         = "ILLUMINACLIP:TruSeq3-PE-2.fa:2:30:10:8:true TRAILING:28 MINLEN:40"
-    from         = null
-}
-```
-
 - [x] `prep.STARIndex`   : for generating `STAR` indexes.
 - [x] `prep.BowtieIndex` : for generating `bowtie2` indexes.
 
