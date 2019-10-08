@@ -97,7 +97,7 @@ if (params.data == null) {
 
 // USER PARAMETER INPUT: OUTPUT DIRECTORY
 if(params.out == null) {
-    out_dir = file("${PWD}/resultsf-rnaSeqCount", type: 'dir')
+    out_dir = file("${PWD}/results_nf-rnaSeqCount", type: 'dir')
 } else{
     out_dir = file(params.out, type: 'dir')
 }
