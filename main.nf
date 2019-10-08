@@ -92,8 +92,7 @@ ${line}
 // ---- THESE DO NOT REQUIRE DATA!!
 if (params.data == null && params.mode in [ "run.ReadTrimming", "run.ReadQC", "run.ReadAlignment", "run.MultiQC"]) {
     exit 1, "$data_error"
-else if (params.data == null && params.mode in [ "prep.Containers", "prep.STARIndex", "prep.BowtieIndex"]) {
-    }
+} else if (params.data == null && params.mode in [ "prep.Containers", "prep.STARIndex", "prep.BowtieIndex"]) {
 } else{
     data_dir = file(params.data, type: 'dir')
 }
