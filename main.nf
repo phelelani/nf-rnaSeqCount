@@ -143,7 +143,7 @@ if(params.singleEnd == null && params.pairedEnd == null) {
 } else {}
 
 // USER PARAMETER INPUT: PATHS TO BE BINDED TO THE IMAGE
-bind_dir      = [params.data, out_dir, new File("${params.genome}".getParent(), new File("${params.genes}".getParent()]
+bind_dir      = [ params.data, out_dir, new File("${params.genome}").getParent(), new File("${params.genes}").getParent() ]
     .unique()
     .collect { it -> "-B ${it}"}
     .join("\n" + ' '.multiply(26))
