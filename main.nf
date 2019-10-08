@@ -143,7 +143,7 @@ if(params.singleEnd == null && params.pairedEnd == null) {
 } else {}
 
 // USER PARAMETER INPUT: PATHS TO BE BINDED TO THE IMAGE
-bind_dir      = [params.data, params.out, params.genome.split('/')[0..-2].join('/'), params.genes.split('/')[0..-2].join('/')]
+bind_dir      = [params.data, out_dir, new File("${params.genome}".getParent(), new File("${params.genes}".getParent()]
     .unique()
     .collect { it -> "-B ${it}"}
     .join("\n" + ' '.multiply(26))
@@ -350,26 +350,26 @@ switch (mode) {
 
         // MAIN WORKFLOW - STEP 1 (OPTIONAL): PERFORM QC ON INPUT FASTQ FILES!
     case['run.ReadQC']: // wWORKS FINE!
-        // process run_QualityChecks {
-        //     label 'midi'
-        //     tag { sample }
-        //     publishDir "${qc_dir}", mode: 'copy', overwrite: true
+        process run_QualityChecks {
+            label 'midi'
+            tag { sample }
+            publishDir "${qc_dir}", mode: 'copy', overwrite: true
             
-        //     input:
-        //     set sample, file(reads) from read_pairs
+            input:
+            set sample, file(reads) from read_pairs
             
-        //     output:
-        //     set sample, file("${sample}*.html") into qc_html
-        //     set sample, file("${sample}*.zip") into qc_multiqc
+            output:
+            set sample, file("${sample}*.html") into qc_html
+            set sample, file("${sample}*.zip") into qc_multiqc
 
-        //     """
-        //     fastqc ${reads.get(0)} ${reads.get(1)} \
-        //         --threads ${task.cpus} \
-        //         --noextract
-        //     """
-        // }
+            """
+            fastqc ${reads.get(0)} ${reads.get(1)} \
+                --threads ${task.cpus} \
+                --noextract
+            """
+        }
 
-        // qc_html.subscribe { println "${it}" }
+        qc_html.subscribe { println "${it}" }
         break
         // --------------------
 
