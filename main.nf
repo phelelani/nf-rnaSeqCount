@@ -287,6 +287,7 @@ switch (mode) {
             label 'mini'
             scratch '$HOME/tmp'
             tag { "Downloading: ${link}" }
+            maxForks 2
             publishDir "$PWD/containers", mode: 'copy', overwrite: true
             
             input:
