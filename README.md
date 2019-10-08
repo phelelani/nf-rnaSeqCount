@@ -30,7 +30,7 @@
 First, you need to clone the `nf-rnaSeqCount` repository onto you machine. You can eisther use `git` or `nextflow` (see the two methods below). I recommend using `nextflow` and creating you own `config` file (will explain later) for executing the workflow in the directory of your choosing. The rest of this documentation assumes that you have used `nextflow` to clone this workflow - If your're an expert and have used `git` to clone the workflow - you know what to do :)
 ```bash
 ## Using nextflow
-nextflow pull https://github.com/phelelani/nf-rnaSeqCount.git
+nextflow pull https://github.com/phelelani/nf-rnaSeqCount
 ```
 Content of the repository:
 ```bash
