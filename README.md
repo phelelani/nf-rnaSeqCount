@@ -195,6 +195,7 @@ This step performs a Quality Check of the different pipeline steps that have bee
 ```bash
 nextflow run nf-rnaSeqCount -profile slurm --mode run.MultiQC -c myparams.config
 ```
+CONGRATULATIONS for getting this far!! :) You can now explore the results and use the read counts to perform differential expression analysis!
 
 ---
 
