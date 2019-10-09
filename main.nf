@@ -458,7 +458,7 @@ switch (mode) {
                     -trimlog trimlog_${sample}.log \
                     -baseout ${sample}_trimmed.fastq.gz \
                     ${trim_params}
-            elif [[ ${stranded} == "paired-end" ]]
+            elif [[ ${stranded} == "singl-end" ]]
             then
                 java -jar /opt/Trimmomatic-0.39/trimmomatic-0.39.jar SE \
                     ${reads.findAll().join(' ')} \
