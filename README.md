@@ -53,6 +53,57 @@ nf-rnaSeqCount
   |--nextfnf-rnaSeqCount.png          ## Pipeline 
   |--README.md                        ## Duh!
 ```
+To get the `help menu` for the workflow, execute `nextflow run nf-rnaSeqCount --help` from anywhere on you system. This will give you:
+```
+====================================================================================================
+######################################  nf-rnaSeqCount v0.2   ######################################
+====================================================================================================
+
+USAGE:
+nextflow run nf-rnaSeqCount -profile "slurm" --data "/path/to/data" --genome "/path/to/genome.fa" --genes "/path/to/genes.gtf"
+
+HELP:
+nextflow run nf-rnaSeqCount --help
+
+MANDATORY ARGUEMENTS:
+-profile     STRING    Executor to be used. Available options:
+				"standard"          : Local execution (no job scheduler).
+				"slurm"             : SLURM scheduler.
+--data       FOLDER    Path to where the input data (FASTQ files) is located. Supported FASTQ files:
+				[ fastq | fastq.gz | fastq.bz2 | fq | fq.gz | fq.bz2 ]
+--genome     FILE      The whole genome FASTA sequence. Supported FASTA files:
+				[ fasta | fa | fna ]
+--genes      FILE      The genome annotation GFT file. Supported GTF file:
+				[ gtf ]
+--mode       STRING    To specify which step of the workflow you are running (see https://github.com/phelelani/nf-rnaSeqCount).
+                       Availeble options:
+				"prep.Containers"   : For downloading Singularity containers used in this workflow.
+				"prep.STARIndex"    : For indexing your reference genome using STAR.
+				"prep.BowtieIndex"  : For indexing your reference genome using Bowtie2.
+				"run.ReadQC"        : For performing general QC on your reads using FastQC. 
+				"run.ReadTrimming"  : For trimming low quality bases and removing adapters from your reads using Trimmmomatic.
+				"run.ReadAlignment" : For aligning your reads to your reference genome using STAR.
+				"run.ReadCounting"  : For counting features in your reads using HTSeq-count and featureCounts.
+				"run.MultiQC"       : For getting a summary of QC through the analysis using MultiQC.
+
+OPTIONAL ARGUEMENTS:
+--help                 To show this menu.
+--out        FOLDER    Path to where the output should be directed (default: $PWD/results_nf-rnaSeqCount).
+--from       STRING    Specify to resume workflow from the QC or trimming step. Options:
+				"run.ReadQC"        : To resume from the QC step (default).
+				"run.ReadTrimming"  : To resume from the trimming step.
+--pairedEnd            If working with paired-end FASTQ files (default).
+--singleEnd            If working with single-end FASTQ files.
+--trim       STRING    Parameters for Trimmomatic. See http://www.usadellab.org/cms/index.php?page=trimmomatic for a more detailed use.
+                       The default parameters for Trimmomatic I have given you here (for both paird- and single-end sequences) are:
+				For paired-end: "ILLUMINACLIP:TruSeq3-PE-2.fa:2:30:10:8:true TRAILING:28 MINLEN:40"
+				For single-end: "ILLUMINACLIP:TruSeq3-SE.fa:2:30:10:8:true TRAILING:28 MINLEN:40"
+--max_memory STRING    Maximum memory you have access to (default: "200.GB")
+--max_cpus   STRING    Maximum CPUs you have access to (default: "24")
+--max_time   STRING    Maximum time you have access to(default: "24.h")
+====================================================================================================
+```
+
 
 ### 1.1. Download test datasets (optional)
 *__NB__: Skip this section if you have your own data to analyse using this workflow! This section is only for getting data to practice using the `nf-rnaSeqCount` workflow!* 
