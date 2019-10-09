@@ -250,7 +250,6 @@ These files contain detailed information on the resources (CPU, MEMORY and TIME)
   |  |--nf-rnaSeqCount_run.ReadTrimming_{report.html,timeline.html,trace.txt}   
   |  |--nf-rnaSeqCount_run.ReadQC_{report.html,timeline.html,trace.txt}
 ```
-
-## I am working on further improving the pipleine and the associated documentation, feel free to share comments and suggestions!
+**NB:** I am working on further improving the pipleine and the associated documentation, feel free to share comments and suggestions!
 
 ---
