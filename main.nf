@@ -1,33 +1,63 @@
 #!/usr/bin/env nextflow
-
+println "clear".execute().text
 //  DO NOT EDIT FROM HERE!! - Unless you brave like King Shaka of course! 
 /*  ======================================================================================================
  *  HELP MENU
  *  ======================================================================================================
  */
+line="=".multiply(100)
+ver="nf-rnaSeqCount v0.2"
 if (params.help) {
-    log.info ''
-    log.info "===================================="
-    log.info "         nf-rnaSeqCount v0.1        "
-    log.info "===================================="
-    log.info ''
-    log.info 'USAGE: '
-    log.info 'nextflow run main.nf --data "/path/to/data" --filetype "type" --out "/path/to/output" --genome "/path/to/genome.fa" --index "/path/to/STARIndex" --genes "/path/to/genes.gtf" --bind "/path/to/bind_1;/path/to/bind_2" -profile "profile" '
-    log.info ''
-    log.info 'HELP: '
-    log.info 'nextflow run main.nf --help'
-    log.info ''
-    log.info 'MANDATORY ARGUEMENTS:'
-    log.info '    --data      FOLDER     Path to where the input data is located (where fastq files are located)'
-    log.info '    --out       FOLDER     Path to where the output should be directed (will be created if it does not exist).'
-    log.info '    --genome    FILE       The whole genome sequence (fasta | fa | fna)'
-    log.info '    --genes     FILE       The genome annotation file (gtf)'
-    log.info '     -profile   SRTING     Executor to be used'
-    log.info ''
-    log.info "====================================\n"
+    println "\n${line}"
+    println "#".multiply(48 - ("${ver}".size() / 2 )) + "  ${ver}   " + "#".multiply(48 - ("${ver}".size() / 2 ))
+    println "${line}\n"
+    println "USAGE:"
+    println "nextflow run nf-rnaSeqCount -profile slurm --data /path/to/data --genome /path/to/genome.fa --genes /path/to/genes.gtf\n" 
+    println "HELP:"
+    println "nextflow run nf-rnaSeqCount --help\n"
+    println "MANDATORY ARGUEMENTS:"
+    println "\t-profile     STRING  Executor to be used. Options:"
+    println "\t\t\t\tstandard          : Local execution (no job scheduler)."
+    println "\t\t\t\tslurm             : SLURM scheduler."
+    println "\t--data       FOLDER  Path to where the input data (FASTQ files) is located. Supported FASTQ files:"
+    println "\t\t\t\t[ fastq | fastq.gz | fastq.bz2 | fq | fq.gz | fq.bz2 ]"
+    println "\t--genome     FILE    The whole genome FASTA sequence. Supported FASTA files:"
+    println "\t\t\t\t[ fasta | fa | fna ]"
+    println "\t--genes      FILE    The genome annotation GFT file. Supported GTF file:"
+    println "\t\t\t\t[ gtf ]"
+    println "\t--mode       STRING  Options:"
+    println "\t\t\t\tprep.Containers   : For downloading Singularity containers used in this workflow."
+    println "\t\t\t\tprep.STARIndex    : For indexing your reference genome using STAR."
+    println "\t\t\t\tprep.BowtieIndex  : For indexing your reference genome using Bowtie2."
+    println "\t\t\t\trun.ReadQC        : For performing general QC on your reads using FastQC. "
+    println "\t\t\t\trun.ReadTrimming  : For trimming low quality bases and removing adapters from your reads using Trimmmomatic."
+    println "\t\t\t\trun.ReadAlignment : For aligning your reads to your reference genome using STAR."
+    println "\t\t\t\trun.ReadCounting  : For counting features in your reads using HTSeq-count and featureCounts."
+    println "\t\t\t\trun.MultiQC       : For getting a summary of QC through the analysis using MultiQC.\n"
+    println "OPTIONAL ARGUEMENTS:"
+    println "\t--help               Specify to show this menu."
+    println "\t--out        FOLDER  Path to where the output should be directed (default: \$PWD/results_nf-rnaSeqCount)."
+    println "\t--from       STRING  Specify to resume workflow from the QC or trimming step. Options:"
+    println "\t\t\t\trun.ReadQC        : To resume from the QC step (default)."
+    println "\t\t\t\trun.ReadTrimming  : To resume from the trimming step."
+    println "\t--pairedEnd          Specify if FASTQ files are paired-end (default)"
+    println "\t--singleEnd          Specify if FASTQ files are single-end."
+    println "\t--trim       STRING  Parameters for TRIMMOMATIC. See http://www.usadellab.org/cms/index.php?page=trimmomatic. Default parameters:"
+    println "\t\t\t\tILLUMINACLIP:TruSeq3-PE-2.fa:2:30:10:8:true TRAILING:28 MINLEN:40"
+    println "\t--max_memory STRING  Maximum memory you have access to (default: 200.GB)"
+    println "\t--max_cpus   STRING  Maximum CPUs you have access to (default: 24)"
+    println "\t--max_time   STRING  Maximum time you have access to(default: 24.h)"
+    println "${line}\n"
     exit 1
 }
 
+from       = null
+pairedEnd  = null
+singleEnd  = null
+trim       = "ILLUMINACLIP:TruSeq3-PE-2.fa:2:30:10:8:true TRAILING:28 MINLEN:40"    
+max_memory = 200.GB
+max_cpus   = 24
+max_time   = 24.h
 
 /*  ======================================================================================================
  *  CHECK ALL USER INPUTS
@@ -35,8 +65,6 @@ if (params.help) {
  */
 
 // MAIN USER INPUT ERRORS
-line="=".multiply(100)
-
 data_error = """
 ${line}
 Oooh no!! Looks like there's a serious issue in your command! 
@@ -165,7 +193,7 @@ ext           = "fastq,fastq.gz,fastq.bz2,fq,fq.gz,fq.bz2"
 //  ======================================================================================================
 
 println "\n" + "=".multiply(100)
-println " ".multiply(45) + "nf-rnaSeqCount v0.2"
+println "#".multiply(48 - ("${ver}".size() / 2 )) + "  ${ver}   " + "#".multiply(48 - ("${ver}".size() / 2 ))
 println "=".multiply(100)
 println "Input data              : $data_dir"
 println "Input data type         : $stranded"
