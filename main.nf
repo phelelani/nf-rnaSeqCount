@@ -118,7 +118,7 @@ ${line}
 
 // USER PARAMETER INPUT: DATA DIRECTORY
 // ---- THESE DO NOT REQUIRE DATA!!
-if (prarams.mode in [ "prep.Containers", "prep.STARIndex", "prep.BowtieIndex", "run.MultiQC" ]) {
+if (params.mode in [ "prep.Containers", "prep.STARIndex", "prep.BowtieIndex", "run.MultiQC" ]) {
     if (params.data == null) {
         data_dir = "YOU HAVEN'T SPECIFIED THE DITA DIRECTORY YET! PLEASE SPECIFY BEFORE RUNNING THE WORKFLOW"
     } else{
