@@ -445,36 +445,40 @@ switch (mode) {
             set sample, file(reads) from read_pairs
             
             output:
-            set sample, file("${sample}*{1,2}P*") into read_pairs_trimmed
+            set sample, file("${sample}_trimmed*.fastq.gz") into read_pairs_trimmed
 
             """
             ln -s /opt/Trimmomatic-0.39/adapters/*.fa .
 
-            if [[ ${stranded} === "paired-end" ]]
+            if [[ ${stranded} == "paired-end" ]]
             then
                 java -jar /opt/Trimmomatic-0.39/trimmomatic-0.39.jar PE \
-                    ${reads.findAll().join(' ')} \
                     -threads ${task.cpus} \
-                    -trimlog trimlog_${sample}.log \
+                    ${reads.findAll().join(' ')} \
                     -baseout ${sample}_trimmed.fastq.gz \
                     ${trim_params}
-            elif [[ ${stranded} == "singl-end" ]]
+            elif [[ ${stranded} == "single-end" ]]
             then
                 java -jar /opt/Trimmomatic-0.39/trimmomatic-0.39.jar SE \
-                    ${reads.findAll().join(' ')} \
                     -threads ${task.cpus} \
-                    -trimlog trimlog_${sample}.log \
+                    ${reads.findAll().join(' ')} \
+                    ${sample}_trimmed.fastq.gz \
                     ${trim_params}
+            else :
             fi
             """
         }
-        //${reads.get(0)} ${reads.get(1)} \
+
         read_pairs_trimmed.subscribe {
             println "\nTrimmed FASTQ files generated for ${it[0]}:"
-            it[1].each {
-                item -> println "\t${item}" 
+            if(it.size >= 2) {
+                println  "\t${it[1]}"
+            } else{
+                it[1].each {
+                    item -> println "\t${item}" 
+                }
+                println " "
             }
-            println " "
         }
         break
         // --------------------        
