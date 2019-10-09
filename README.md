@@ -111,7 +111,7 @@ OPTIONAL ARGUEMENTS:
 ---
 
 ### 1.1. Download test datasets (optional)
-*__NB__: Skip this section if you have your own data to analyse using this workflow! This section is only for getting data to practice using the `nf-rnaSeqCount` workflow!* 
+We will now download the reference genome (along with its annotation file) from Ensembl. We will also download the FASTQ files from the H3ABioNet site, which we will analyse using the `nf-rnaSeqCount` workflow. *__NB__: Skip this section if you have your own data to analyse using this workflow! This section is only for getting data to practice using the `nf-rnaSeqCount` workflow!* 
 
 - [x] Download and decompress the mouse reference genome along with its annotation:
 ```
