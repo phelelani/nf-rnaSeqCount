@@ -115,16 +115,23 @@ We will now download the reference genome (along with its annotation file) from 
 
 - [x] Download and decompress the mouse reference genome along with its annotation:
 ```
-wget -c -O genome.fa.gz ftp://ftp.ensembl.org/pub/release-68/fasta/mus_musculus/dna/Mus_musculus.GRCm38.68.dna.toplevel.fa.gz
-wget -c -O genes.gtd.gz ftp://ftp.ensembl.org/pub/release-68/gtf/mus_musculus/Mus_musculus.GRCm38.68.gtf.gz
-gunzip genome.fa.gz
-gunzip genes.gtf.gz
+## Make a directory for the reference genome:
+mkdir reference
+
+## Download the reference genome (FASTA) and annotation file (GTF) files and put them into the newlly created directory:
+wget -c -O reference/genome.fa.gz ftp://ftp.ensembl.org/pub/release-68/fasta/mus_musculus/dna/Mus_musculus.GRCm38.68.dna.toplevel.fa.gz
+wget -c -O reference/genes.gtf.gz ftp://ftp.ensembl.org/pub/release-68/gtf/mus_musculus/Mus_musculus.GRCm38.68.gtf.gz
+gunzip reference/genome.fa.gz
+gunzip reference/genes.gtf.gz
 ```
 
 - [x] Download RNA-seq test dataset from H3ABioNet:
 ```
-lftp -e 'mirror -c --use-pget-n=5 http://h3data.cbio.uct.ac.za/assessments/RNASeq/practice/dataset; bye'
-for sample in sample{37..42}_R{1,2}.fastq.gz; do wget -c http://h3data.cbio.uct.ac.za/assessments/RNASeq/practice/dataset/$sample; done
+## Make a directory for the data:
+mkdir data
+
+## Download the data:
+for sample in sample{37..42}_R{1,2}.fastq.gz; do wget -c -O data/$sample http://h3data.cbio.uct.ac.za/assessments/RNASeq/practice/dataset/$sample; done
 ```
 
 ### 1.2. Download the `Singularity` containers (required to execute the pipeline):
@@ -140,12 +147,12 @@ To generate the genome indexes, run the following commands:
 
 - [x] Generate ```STAR``` indexes
 ```
-nextflow run nf-rnaSeqCount -profile slurm --mode prep.STARIndex 
+nextflow run nf-rnaSeqCount -profile slurm --mode prep.STARIndex --genome "reference/genome.fa" --genes "reference/genes.gtf"
 ```
 
 - [x] Generate ```bowtie2``` indexes
 ```
-nextflow run nf-rnaSeqCount -profile slurm --mode prep.BowtieIndex
+nextflow run nf-rnaSeqCount -profile slurm --mode prep.BowtieIndex --genome "reference/genome.fa" --genes "reference/genes.gtf"
 ```
 
 ---
