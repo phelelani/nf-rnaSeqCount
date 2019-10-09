@@ -53,7 +53,11 @@ nf-rnaSeqCount
   |--nextfnf-rnaSeqCount.png          ## Pipeline 
   |--README.md                        ## Duh!
 ```
-To get the `help menu` for the workflow, execute `nextflow run nf-rnaSeqCount --help` from anywhere on you system. This will give you:
+To get the `help menu` for the workflow, execute the following from anywherre on your system aftercloning the repository:
+```
+nextflow run nf-rnaSeqCount --help
+```
+The command above will give you the following usage information and options for running the `nf-rnaSeqCount` workflow:
 ```
 ====================================================================================================
 ######################################  nf-rnaSeqCount v0.2   ######################################
@@ -104,6 +108,7 @@ OPTIONAL ARGUEMENTS:
 ====================================================================================================
 ```
 
+---
 
 ### 1.1. Download test datasets (optional)
 *__NB__: Skip this section if you have your own data to analyse using this workflow! This section is only for getting data to practice using the `nf-rnaSeqCount` workflow!* 
