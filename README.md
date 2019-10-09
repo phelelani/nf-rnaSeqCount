@@ -140,20 +140,15 @@ nextflow run nf-rnaSeqCount -profile slurm --mode prep.Containers
 ```
 
 ### 1.3. Generating genome indexes.
-- [x] `prep.STARIndex`   : for generating `STAR` indexes.
-- [x] `prep.BowtieIndex` : for generating `bowtie2` indexes.
-
-To generate the genome indexes, run the following commands:
-
-- [x] Generate ```STAR``` indexes
+To generate the `STAR` and `Bowtie2` genome indexes, run the following commands:
 ```
+## Generate STAR indexes
 nextflow run nf-rnaSeqCount -profile slurm --mode prep.STARIndex --genome "reference/genome.fa" --genes "reference/genes.gtf"
-```
 
-- [x] Generate ```bowtie2``` indexes
-```
+## Generate Bowtie2 indexes:
 nextflow run nf-rnaSeqCount -profile slurm --mode prep.BowtieIndex --genome "reference/genome.fa" --genes "reference/genes.gtf"
 ```
+We are now ready to execute the workflow!
 
 ---
 
