@@ -12,41 +12,44 @@ if (params.help) {
     println "#".multiply(48 - ("${ver}".size() / 2 )) + "  ${ver}   " + "#".multiply(48 - ("${ver}".size() / 2 ))
     println "${line}\n"
     println "USAGE:"
-    println "nextflow run nf-rnaSeqCount -profile slurm --data /path/to/data --genome /path/to/genome.fa --genes /path/to/genes.gtf\n" 
+    println "nextflow run nf-rnaSeqCount -profile \"slurm\" --data \"/path/to/data\" --genome \"/path/to/genome.fa\" --genes \"/path/to/genes.gtf\"\n" 
     println "HELP:"
     println "nextflow run nf-rnaSeqCount --help\n"
     println "MANDATORY ARGUEMENTS:"
-    println "\t-profile     STRING  Executor to be used. Options:"
-    println "\t\t\t\tstandard          : Local execution (no job scheduler)."
-    println "\t\t\t\tslurm             : SLURM scheduler."
-    println "\t--data       FOLDER  Path to where the input data (FASTQ files) is located. Supported FASTQ files:"
+    println "-profile     STRING    Executor to be used. Available options:"
+    println "\t\t\t\t\"standard\"          : Local execution (no job scheduler)."
+    println "\t\t\t\t\"slurm\"             : SLURM scheduler."
+    println "--data       FOLDER    Path to where the input data (FASTQ files) is located. Supported FASTQ files:"
     println "\t\t\t\t[ fastq | fastq.gz | fastq.bz2 | fq | fq.gz | fq.bz2 ]"
-    println "\t--genome     FILE    The whole genome FASTA sequence. Supported FASTA files:"
+    println "--genome     FILE      The whole genome FASTA sequence. Supported FASTA files:"
     println "\t\t\t\t[ fasta | fa | fna ]"
-    println "\t--genes      FILE    The genome annotation GFT file. Supported GTF file:"
+    println "--genes      FILE      The genome annotation GFT file. Supported GTF file:"
     println "\t\t\t\t[ gtf ]"
-    println "\t--mode       STRING  Options:"
-    println "\t\t\t\tprep.Containers   : For downloading Singularity containers used in this workflow."
-    println "\t\t\t\tprep.STARIndex    : For indexing your reference genome using STAR."
-    println "\t\t\t\tprep.BowtieIndex  : For indexing your reference genome using Bowtie2."
-    println "\t\t\t\trun.ReadQC        : For performing general QC on your reads using FastQC. "
-    println "\t\t\t\trun.ReadTrimming  : For trimming low quality bases and removing adapters from your reads using Trimmmomatic."
-    println "\t\t\t\trun.ReadAlignment : For aligning your reads to your reference genome using STAR."
-    println "\t\t\t\trun.ReadCounting  : For counting features in your reads using HTSeq-count and featureCounts."
-    println "\t\t\t\trun.MultiQC       : For getting a summary of QC through the analysis using MultiQC.\n"
+    println "--mode       STRING    To specify which step of the workflow you are running (see https://github.com/phelelani/nf-rnaSeqCount)."
+    println "                       Availeble options:"
+    println "\t\t\t\t\"prep.Containers\"   : For downloading Singularity containers used in this workflow."
+    println "\t\t\t\t\"prep.STARIndex\"    : For indexing your reference genome using STAR."
+    println "\t\t\t\t\"prep.BowtieIndex\"  : For indexing your reference genome using Bowtie2."
+    println "\t\t\t\t\"run.ReadQC\"        : For performing general QC on your reads using FastQC. "
+    println "\t\t\t\t\"run.ReadTrimming\"  : For trimming low quality bases and removing adapters from your reads using Trimmmomatic."
+    println "\t\t\t\t\"run.ReadAlignment\" : For aligning your reads to your reference genome using STAR."
+    println "\t\t\t\t\"run.ReadCounting\"  : For counting features in your reads using HTSeq-count and featureCounts."
+    println "\t\t\t\t\"run.MultiQC\"       : For getting a summary of QC through the analysis using MultiQC.\n"
     println "OPTIONAL ARGUEMENTS:"
-    println "\t--help               Specify to show this menu."
-    println "\t--out        FOLDER  Path to where the output should be directed (default: \$PWD/results_nf-rnaSeqCount)."
-    println "\t--from       STRING  Specify to resume workflow from the QC or trimming step. Options:"
-    println "\t\t\t\trun.ReadQC        : To resume from the QC step (default)."
-    println "\t\t\t\trun.ReadTrimming  : To resume from the trimming step."
-    println "\t--pairedEnd          Specify if FASTQ files are paired-end (default)"
-    println "\t--singleEnd          Specify if FASTQ files are single-end."
-    println "\t--trim       STRING  Parameters for TRIMMOMATIC. See http://www.usadellab.org/cms/index.php?page=trimmomatic. Default parameters:"
-    println "\t\t\t\tILLUMINACLIP:TruSeq3-PE-2.fa:2:30:10:8:true TRAILING:28 MINLEN:40"
-    println "\t--max_memory STRING  Maximum memory you have access to (default: 200.GB)"
-    println "\t--max_cpus   STRING  Maximum CPUs you have access to (default: 24)"
-    println "\t--max_time   STRING  Maximum time you have access to(default: 24.h)"
+    println "--help                 To show this menu."
+    println "--out        FOLDER    Path to where the output should be directed (default: \$PWD/results_nf-rnaSeqCount)."
+    println "--from       STRING    Specify to resume workflow from the QC or trimming step. Options:"
+    println "\t\t\t\t\"run.ReadQC\"        : To resume from the QC step (default)."
+    println "\t\t\t\t\"run.ReadTrimming\"  : To resume from the trimming step."
+    println "--pairedEnd            If working with paired-end FASTQ files (default)."
+    println "--singleEnd            If working with single-end FASTQ files."
+    println "--trim       STRING    Parameters for Trimmomatic. See http://www.usadellab.org/cms/index.php?page=trimmomatic for a more detailed use."
+    println "                       The default parameters for Trimmomatic I have given you here (for both paird- and single-end sequences) are:"
+    println "\t\t\t\tFor paired-end: \"ILLUMINACLIP:TruSeq3-PE-2.fa:2:30:10:8:true TRAILING:28 MINLEN:40\""
+    println "\t\t\t\tFor single-end: \"ILLUMINACLIP:TruSeq3-SE.fa:2:30:10:8:true TRAILING:28 MINLEN:40\""
+    println "--max_memory STRING    Maximum memory you have access to (default: \"200.GB\")"
+    println "--max_cpus   STRING    Maximum CPUs you have access to (default: \"24\")"
+    println "--max_time   STRING    Maximum time you have access to(default: \"24.h\")"
     println "${line}\n"
     exit 1
 }
@@ -54,7 +57,7 @@ if (params.help) {
 from       = null
 pairedEnd  = null
 singleEnd  = null
-trim       = "ILLUMINACLIP:TruSeq3-PE-2.fa:2:30:10:8:true TRAILING:28 MINLEN:40"    
+trim       = null
 max_memory = 200.GB
 max_cpus   = 24
 max_time   = 24.h
@@ -183,7 +186,16 @@ bind_dir      = [ params.data, out_dir, new File("${params.genome}").getParent()
     .collect { it -> "-B ${it}"}
     .join("\n" + ' '.multiply(26))
     .toString()
-trim_params   = params.trim
+
+if(params.trim == null) {
+    if(stranded == "paired-end") {
+        trim_params = "ILLUMINACLIP:TruSeq3-PE-2.fa:2:30:10:8:keepBothReads TRAILING:28 MINLEN:40"
+    } else if(stranded == "single-end") {
+        trim_params = "ILLUMINACLIP:TruSeq3-SE.fa:2:30:10 TRAILING:28 MINLEN:40"
+    }
+} else{
+    trim_params = params.trim
+}
 
 // OUTPUT DIRECTORIES
 out_dir.mkdir()
@@ -194,12 +206,13 @@ counts_dir    = file("${out_dir}/4_Read_Counts", type: 'dir')
 multiqc_dir   = file("${out_dir}/5_MultiQC", type: 'dir')
 ext           = "fastq,fastq.gz,fastq.bz2,fq,fq.gz,fq.bz2"
 
+
 //  ======================================================================================================
 //  RUN INFO
 //  ======================================================================================================
-
+options="nf-rnaSeqCount v0.2 - Input/Output and Parameters:"
 println "\n" + "=".multiply(100)
-println "#".multiply(48 - ("${ver}".size() / 2 )) + "  ${ver}   " + "#".multiply(48 - ("${ver}".size() / 2 ))
+println "#".multiply(48 - ("${options}".size() / 2 )) + "  ${options}  " + "#".multiply(48 - ("${options}".size() / 2 ))
 println "=".multiply(100)
 println "Input data              : $data_dir"
 println "Input data type         : $stranded"
@@ -214,7 +227,7 @@ println "Genome annotation       : $genes"
 println "Trimmomatic parameters  : $trim_params"
 println "Paths to bind           : $bind_dir"
 println "=".multiply(100)
-
+println " "
 // ======================================================================================================
 //  PIPELINE START
 // ======================================================================================================
@@ -253,7 +266,6 @@ if(mode in ["prep.Containers", "prep.STARIndex", "prep.BowtieIndex"]) {
             break
         case ["prep.STARIndex","prep.BowtieIndex"]:
             index_dir = genome.getParent()
-            println index_dir
             break
     }
 } else if(mode in ["run.ReadQC", "run.ReadTrimming", "run.ReadAlignment", "run.ReadCounting", "run.MultiQC"]) {
@@ -261,10 +273,10 @@ if(mode in ["prep.Containers", "prep.STARIndex", "prep.BowtieIndex"]) {
     switch (mode) {
         case["run.ReadQC"]:
             if(stranded == "paired-end") {
-                read_pairs = Channel.fromFilePairs("${data_dir}/*{R,read}[1,2]*.{${ext}}", type: 'file')
+                read_pairs = Channel.fromFilePairs("${data_dir}/*.{${ext}}", type: 'file', size:-1) { "all_reads" }
                     .ifEmpty { exit 1, "$main_data_error" }
             } else if(stranded == "single-end") {
-                read_pairs = Channel.fromFilePairs("${data_dir}/*.{${ext}}", type: 'file', size:1)
+                read_pairs = Channel.fromFilePairs("${data_dir}/*.{${ext}}", type: 'file', size:-1) { "all_reads" }
                     .ifEmpty { exit 1, "$main_data_error" }
             }
             break
@@ -297,14 +309,13 @@ if(mode in ["prep.Containers", "prep.STARIndex", "prep.BowtieIndex"]) {
             }
             break
         case["run.ReadCounting"]:
-            Channel.fromFilePairs("${align_dir}/**/*_Aligned.out.bam", size:-1) { file -> "${file.baseName.replace(/_Aligned.out/, "")}" }
-                .into { bams_htseqCounts; bams_featureCounts; check }
-            //.ifEmpty { exit 1, "$bams_error" }
-            check.view()
+            bams = Channel.fromFilePairs("${align_dir}/**_Aligned.out.bam", size:-1) { 
+                file -> "${file.baseName.replace(/_Aligned.out/, "")}" }
+                .ifEmpty { exit 1, "$bams_error" }
+            bams.into { bams_htseqCounts; bams_featureCounts}
             break
         case["run.MultiQC"]:
             // CHECK IF THE OUTPUT DIRECTORY IS EMPTY! GIVE ERROR IF ITS EMPTY
-            
             break
     }
 } else {
@@ -335,8 +346,6 @@ switch (mode) {
             singularity pull nf-rnaSeqCount-${link.substring(32,)}.sif ${link}
             """
         }
-
-        containers.subscribe { println "${it}" }
         break
         // ==========
         
@@ -360,7 +369,13 @@ switch (mode) {
             """
         }
 
-        star_index.subscribe { println "${it}" }
+        star_index.subscribe { 
+            println "\nSTAR index files generated:"
+            it[1].each { 
+                item -> println "\t${item}" 
+            }
+            println " "
+        }
         break
         // ==========
         
@@ -379,33 +394,43 @@ switch (mode) {
             """
         }   
     
-        bowtie_index.subscribe { println "${it}" }
+        bowtie_index.subscribe { 
+            println "\nBowtie2 index files generated:"
+            it[1].each { 
+                item -> println "\t${item}" 
+            }
+            println " "
+        }
         break
         // ========== PREPPING STEPS/OPTIONS END HERE!
 
 
         // MAIN WORKFLOW - STEP 1 (OPTIONAL): PERFORM QC ON INPUT FASTQ FILES!
-    case['run.ReadQC']: // wWORKS FINE!
+    case['run.ReadQC']: 
         process run_QualityChecks {
             label 'midi'
-            tag { sample }
+            tag { samples }
             publishDir "${qc_dir}", mode: 'copy', overwrite: true
             
             input:
-            set sample, file(reads) from read_pairs
+            set val(samples), file(reads) from read_pairs
             
             output:
-            set sample, file("${sample}*.html") into qc_html
-            set sample, file("${sample}*.zip") into qc_multiqc
+            set val(samples), file("*.{html,zip}") into qc_html
 
             """
-            fastqc ${reads.get(0)} ${reads.get(1)} \
+            fastqc ${reads.findAll().join(' ') } \
                 --threads ${task.cpus} \
                 --noextract
             """
         }
-
-        qc_html.subscribe { println "${it}" }
+        qc_html.subscribe {
+            println "\nFastQC files generated for all the samples:"
+            it[1].each {
+                item -> println "\t${item}" 
+            }
+            println " "
+        }
         break
         // --------------------
 
@@ -423,34 +448,36 @@ switch (mode) {
             set sample, file("${sample}*{1,2}P*") into read_pairs_trimmed
 
             """
-            java -jar /opt/Trimmomatic-0.39/trimmomatic-0.39.jar PE \
-                -threads ${task.cpus} \
-                -trimlog trimlog_${sample}.log \
-                ${reads.get(0)} ${reads.get(1)} \
-                -baseout ${sample}_trimmed.fastq.gz \
-                \$(sed 's|ILLUMINACLIP:|ILLUMINACLIP:/opt/Trimmomatic-0.39/adapters/|' <<< "${trim_params}")
+            ln -s /opt/Trimmomatic-0.39/adapters/*.fa .
+
+            if [[ ${stranded} === "paired-end" ]]
+            then
+                java -jar /opt/Trimmomatic-0.39/trimmomatic-0.39.jar PE \
+                    ${reads.findAll().join(' ')} \
+                    -threads ${task.cpus} \
+                    -trimlog trimlog_${sample}.log \
+                    -baseout ${sample}_trimmed.fastq.gz \
+                    ${trim_params}
+            elif [[ ${stranded} == "paired-end" ]]
+            then
+                java -jar /opt/Trimmomatic-0.39/trimmomatic-0.39.jar SE \
+                    ${reads.findAll().join(' ')} \
+                    -threads ${task.cpus} \
+                    -trimlog trimlog_${sample}.log \
+                    ${trim_params}
+            fi
             """
+        }
+        //${reads.get(0)} ${reads.get(1)} \
+        read_pairs_trimmed.subscribe {
+            println "\nTrimmed FASTQ files generated for ${it[0]}:"
+            it[1].each {
+                item -> println "\t${item}" 
+            }
+            println " "
         }
         break
         // --------------------        
-
-// ${read_file_cmd} \
-// def checkFileExtension(){
-//     switch() {
-//         case ['fastq','fq']:
-//             read_file_cmd = ''
-//             break
-//         case ['fastq.gz','fq.gz']:
-//             read_file_cmd = '--readFilesCommand gunzip -c'
-//             break
-//         case ['fastq.bz2','fq.bz2']:
-//             read_file_cmd = '--readFilesCommand bunzip2 -c'
-//             break
-//         case null:
-//             read_file_cmd = '--readFilesCommand gunzip -c'
-//             break
-//     }
-// }
 
     case['run.ReadAlignment']: // <<<<< ALL GOOD - MUST FIX THE READFILE COMMAND
         process run_STAR {
@@ -468,23 +495,23 @@ switch (mode) {
             STAR --runMode alignReads \
                 --genomeDir ${index} \
                 --readFilesCommand gunzip -c \
-                --readFilesIn ${reads.get(0)} ${reads.get(1)} \
+                --readFilesIn ${reads.findAll().join(' ')} \
                 --runThreadN ${task.cpus} \
                 --outSAMtype BAM Unsorted \
                 --outFileNamePrefix ${sample}_
             """
         }
-        
-        star_alignments.subscribe { println "${it}" }
+        star_alignments.subscribe {
+            println "\nAlignment files generated for ${it[0]}:"
+            it[1].each {
+                item -> println "\t${item}" 
+            }
+            println " "
+        }        
         break
         // ==========
         
         case['run.ReadCounting']:
-        // GET INPUT DATA
-        // Channel.fromFilePairs("$align_dir/**_Aligned.out.bam", size:-1) { 
-        //     file -> "${file.baseName.replace(/_Aligned.out/, "")}" 
-        // }.into { bams_htseqCounts; bams_featureCounts }
-
         // USE HTSEQCOUNTS TO GET RAW READ COUNTS
         process run_HTSeqCount {
             label 'mini'
@@ -531,7 +558,11 @@ switch (mode) {
             out_file = "gene_counts_final.txt"
             template "clean_htseqCounts.sh"
         }
-
+        htseqCounts_cleaned.subscribe {
+            println "\nRead Counts generated by HTSeqCounts for all sample:"
+            println "\t${it}" 
+            println " "
+        }        
 
         // GET RAW COUNTS USING FEATURECOUNTS
         // GET ALL THE BAM FILE LOCATIONS TO PROCESS WITH FEATURECOUNTS
@@ -583,8 +614,11 @@ switch (mode) {
             out_file = "gene_counts_final.txt"
             template "clean_featureCounts.sh"
         }
-
-        featureCounts_cleaned.view()
+        featureCounts_cleaned.subscribe {
+            println "\nRead Counts generated by featureCounts for all sample:"
+            println "\t${it}" 
+            println " "
+        }
         break
         // ==========
 
@@ -592,7 +626,7 @@ switch (mode) {
         process run_MultiQC {
             label 'mini'
             tag { 'MultiQC - ALL' }
-            publishDir "${multiqc_dir}/report_QC", mode: 'copy', overwrite: false
+            publishDir "${multiqc_dir}", mode: 'copy', overwrite: false
             
             output:
             file('*') into multiQC
@@ -601,8 +635,6 @@ switch (mode) {
             multiqc ${out_dir} --force
             """
         }
-
-        multiQC.view()
         break
         // ==========
 }
@@ -611,9 +643,10 @@ switch (mode) {
 // ======================================================================================================
 //  WORKFLOW SUMMARY
 //  ======================================================================================================
+summary="nf-rnaSeqCount v0.2 - Execution Summary:"
 workflow.onComplete {
     println "\n${line}"
-    println "Pipeline execution summary:"
+    println "#".multiply(48 - ("${summary}".size() / 2 )) + "  ${summary}  " + "#".multiply(48 - ("${summary}".size() / 2 ))    
     println "${line}"
     println "Execution command   : ${workflow.commandLine}"
     println "Execution name      : ${workflow.runName}"
@@ -626,9 +659,10 @@ workflow.onComplete {
     println "Execution directory : ${workflow.launchDir}"
     println "Configuration files : ${workflow.configFiles}"
     println "Workflow containers : ${workflow.container}"
-    println "exit status : ${workflow.exitStatus}"
-    println "Error report: ${workflow.errorReport ?: '-'}"
-    println "${line}"
+    println "exit status         : ${workflow.exitStatus}"
+    println "Error report        : ${workflow.errorReport ?: '-'}"
+    println "${line}\n"
+    println "\n"
 }
 
 workflow.onError {
