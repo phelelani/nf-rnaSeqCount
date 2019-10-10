@@ -145,7 +145,7 @@ if(params.genome == null) {
     exit 1, "$genome_error"
 } else{
     genome = file(params.genome, type: 'file')
-    index = new File(params.genome).getParent()
+    index_dir = genome.getParent()
 }
 
 // USER PARAMETER INPUT: GENOME ANNOTATION FILE (GFT/GFF)
@@ -265,7 +265,7 @@ if(mode in ["prep.Containers", "prep.STARIndex", "prep.BowtieIndex"]) {
             
             break
         case ["prep.STARIndex","prep.BowtieIndex"]:
-            index_dir = genome.getParent()
+            
             break
     }
 } else if(mode in ["run.ReadQC", "run.ReadTrimming", "run.ReadAlignment", "run.ReadCounting", "run.MultiQC"]) {
@@ -497,7 +497,7 @@ switch (mode) {
             
             """
             STAR --runMode alignReads \
-                --genomeDir ${index} \
+                --genomeDir ${index_dir} \
                 --readFilesCommand gunzip -c \
                 --readFilesIn ${reads.findAll().join(' ')} \
                 --runThreadN ${task.cpus} \
