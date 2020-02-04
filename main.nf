@@ -358,7 +358,7 @@ println ' '.multiply(26) + "- ${multiqc_dir.baseName}"
 println "Genome                  : $genome"
 println "Genome annotation       : $genes"
 println "Trimmomatic parameters  : $trim_params"
-println "Paths to bind           : $bind_dir"
+println "Paths to bind           : $bind_dirs"
 println "=".multiply(100)
 println " "
 // ======================================================================================================
