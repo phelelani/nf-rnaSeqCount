@@ -199,6 +199,7 @@ switch (params.trim) {
                 trim_params = "ILLUMINACLIP:TruSeq3-SE.fa:2:30:10 TRAILING:28 MINLEN:40"
                 break
         }
+        break
     default:
         trim_params = params.trim
         break
