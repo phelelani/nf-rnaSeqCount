@@ -21,7 +21,7 @@
 ---
 
 <p align="center">
-  <img width="1000" src="nf-rnaSeqCount.png">
+  <img width="600" src="nf-rnaSeqCount.png">
 </p>
 
 ---
