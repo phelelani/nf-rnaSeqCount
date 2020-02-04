@@ -155,7 +155,7 @@ switch (params.genes) {
 // USER PARAMETER INPUT: OUTPUT DIRECTORY
 switch (params.out) {
     case [null]:
-        out_dir = file("${PWD}/results_nf-rnaSeqMetagen", type: 'dir')
+        out_dir = file("${PWD}/results_nf-rnaSeqCount", type: 'dir')
         break
     default:
         out_dir = file(params.out, type: 'dir')
@@ -375,9 +375,7 @@ switch (mode) {
         
         process run_DownloadContainers {
             label 'mini'
-            scratch '$HOME/tmp'
             tag { "Downloading: ${link}" }
-            maxForks 2
             publishDir "$PWD/containers", mode: 'copy', overwrite: true
             
             input:
