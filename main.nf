@@ -288,11 +288,11 @@ switch (params.mode) {
                 }
                 break
             case ["run.ReadAlignment"]:
+                breakIfNull(params.genome,"$genome_error")
+                breakIfNull(params.genes,"$genes_error")
                 switch (resume_from) {
                     case [null]:
                         breakIfNull(params.data,"$data_error")
-                        breakIfNull(params.genome,"$genome_error")
-                        breakIfNull(params.genes,"$genes_error")
                         // GET DATA BASED ON THE STRANDEDNESS
                         switch (stranded) {
                             case ["paired-end"]:
@@ -321,7 +321,7 @@ switch (params.mode) {
                         break
                 }
                 break
-            case ["run.ReadCounting"]:
+            case ["run.ReadCounting"]:                
                 bams = Channel.fromFilePairs("${align_dir}/**_Aligned.out.bam", size:-1) { 
                     file -> "${file.baseName.replace(/_Aligned.out/, "")}" }
                     .ifEmpty { exit 1, "$bams_error" }
