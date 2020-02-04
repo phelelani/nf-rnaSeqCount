@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 println "clear".execute().text
-//  DO NOT EDIT FROM HERE!! - Unless you brave like King Shaka of course! 
+
 /*  ======================================================================================================
  *  HELP MENU
  *  ======================================================================================================
@@ -19,13 +19,13 @@ if (params.help) {
     println "-profile     STRING    Executor to be used. Available options:"
     println "\t\t\t\t\"standard\"          : Local execution (no job scheduler)."
     println "\t\t\t\t\"slurm\"             : SLURM scheduler."
+    println "--mode       STRING    To specify which step of the workflow you are running (see https://github.com/phelelani/nf-rnaSeqCount)."
     println "--data       FOLDER    Path to where the input data (FASTQ files) is located. Supported FASTQ files:"
     println "\t\t\t\t[ fastq | fastq.gz | fastq.bz2 | fq | fq.gz | fq.bz2 ]"
     println "--genome     FILE      The whole genome FASTA sequence. Supported FASTA files:"
     println "\t\t\t\t[ fasta | fa | fna ]"
     println "--genes      FILE      The genome annotation GFT file. Supported GTF file:"
     println "\t\t\t\t[ gtf ]"
-    println "--mode       STRING    To specify which step of the workflow you are running (see https://github.com/phelelani/nf-rnaSeqCount)."
     println "                       Availeble options:"
     println "\t\t\t\t\"prep.Containers\"   : For downloading Singularity containers used in this workflow."
     println "\t\t\t\t\"prep.STARIndex\"    : For indexing your reference genome using STAR."
@@ -37,7 +37,8 @@ if (params.help) {
     println "\t\t\t\t\"run.MultiQC\"       : For getting a summary of QC through the analysis using MultiQC.\n"
     println "OPTIONAL ARGUEMENTS:"
     println "--help                 To show this menu."
-    println "--out        FOLDER    Path to where the output should be directed (default: \$PWD/results_nf-rnaSeqCount)."
+    println "--out        FOLDER    Path to where the output should be directed."
+    println "                       Default: \$PWD/results_nf-rnaSeqCount)."
     println "--from       STRING    Specify to resume workflow from the QC or trimming step. Options:"
     println "\t\t\t\t\"run.ReadQC\"        : To resume from the QC step (default)."
     println "\t\t\t\t\"run.ReadTrimming\"  : To resume from the trimming step."
@@ -47,20 +48,15 @@ if (params.help) {
     println "                       The default parameters for Trimmomatic I have given you here (for both paird- and single-end sequences) are:"
     println "\t\t\t\tFor paired-end: \"ILLUMINACLIP:TruSeq3-PE-2.fa:2:30:10:8:true TRAILING:28 MINLEN:40\""
     println "\t\t\t\tFor single-end: \"ILLUMINACLIP:TruSeq3-SE.fa:2:30:10:8:true TRAILING:28 MINLEN:40\""
-    println "--max_memory STRING    Maximum memory you have access to (default: \"200.GB\")"
-    println "--max_cpus   STRING    Maximum CPUs you have access to (default: \"24\")"
-    println "--max_time   STRING    Maximum time you have access to(default: \"24.h\")"
+    println "--max_memory STRING    Maximum memory you have access to."
+    println "                       Default: \"200.GB\""
+    println "--max_cpus   STRING    Maximum CPUs you have access to."
+    println "                       Default: \"24\""
+    println "--max_time   STRING    Maximum time you have access to."
+    println "                       Default: \"24.h\""
     println "${line}\n"
     exit 1
 }
-
-from       = null
-pairedEnd  = null
-singleEnd  = null
-trim       = null
-max_memory = 200.GB
-max_cpus   = 24
-max_time   = 24.h
 
 /*  ======================================================================================================
  *  CHECK ALL USER INPUTS
@@ -119,47 +115,52 @@ The allowed options for \'--from\' are:
 ${line}
 """
 
-// USER PARAMETER INPUT: DATA DIRECTORY
-// ---- THESE DO NOT REQUIRE DATA!!
-if (params.mode in [ "prep.Containers", "prep.STARIndex", "prep.BowtieIndex", "run.MultiQC" ]) {
-    if (params.data == null) {
-        data_dir = "YOU HAVEN'T SPECIFIED THE DITA DIRECTORY YET! PLEASE SPECIFY BEFORE RUNNING THE WORKFLOW"
-    } else{
-        data_dir = file(params.data, type: 'dir')
-    }
-} else if (params.data == null && prarams.mode in [ "run.ReadQC", "run.ReadTrimming", "run.ReadAlignment", "run.ReadCounting"]) {
-    exit 1, "$data_error"
-} else{
-    data_dir = file(params.data, type: 'dir')
-}
+// EMPTY LIST FOR COLLECTING ALL THE PATHS TO BIND TO SINGULARITY IMAGE
+bind_dirs = []
 
-// USER PARAMETER INPUT: OUTPUT DIRECTORY
-if(params.out == null) {
-    out_dir = file("${PWD}/results_nf-rnaSeqCount", type: 'dir')
-} else{
-    out_dir = file(params.out, type: 'dir')
+// USER PARAMETER INPUT: DATA DIRECTORY
+switch (params.data) {
+    case [null]:
+        data_dir = "NOT SPECIFIED!"
+        break
+    default:
+        data_dir = file(params.data, type: 'dir')
+        bind_dirs.add(data_dir)
+        break
 }
 
 // USER PARAMETER INPUT: GENOME FASTA FILE
-if(params.genome == null) {
-    exit 1, "$genome_error"
-} else{
-    genome = file(params.genome, type: 'file')
-    index_dir = genome.getParent()
+switch (params.genome) {
+    case [null]:
+        genome = "NOT SPECIFIED!"
+        break
+    default:
+        genome = file(params.genome, type: 'file', checkIfExists: true)
+        index_dir = genome.getParent()
+        bind_dirs.add(genome.getParent())
+        break
 }
 
 // USER PARAMETER INPUT: GENOME ANNOTATION FILE (GFT/GFF)
-if(params.genes == null) {
-    exit 1, "$genes_error"
-} else{
-    genes = file(params.genes, type: 'file') 
+switch (params.genes) {
+    case [null]:
+        genes = "NOT SPECIFIED!"
+        break
+    default:
+        genes = file(params.genes, type: 'file', checkIfExists: true)
+        bind_dirs.add(genes.getParent())
+        break
 }
 
-// USER INPUT MODE: WHICH ANALYSIS TO RUN!
-if(params.mode == null) {
-    exit 1, "$mode_error"
-} else {
-    mode = params.mode
+// USER PARAMETER INPUT: OUTPUT DIRECTORY
+switch (params.out) {
+    case [null]:
+        out_dir = file("${PWD}/results_nf-rnaSeqMetagen", type: 'dir')
+        break
+    default:
+        out_dir = file(params.out, type: 'dir')
+        bind_dirs.add(out_dir)
+        break
 }
 
 // USER INPUT RESUME FROM: WHERE TO PICK UP??
@@ -171,8 +172,9 @@ if(params.from == null) {
     exit 1, "$from_error"
 }
 
+
 // USER STRANDED MODE: ARE WE DOING PAIRED- OR SINGLE-END?
-if(params.singleEnd == null && params.pairedEnd == null) {
+if (params.singleEnd == null && params.pairedEnd == null) {
     stranded = "paired-end"
 } else if(params.singleEnd) {
     stranded = "single-end"
@@ -180,57 +182,36 @@ if(params.singleEnd == null && params.pairedEnd == null) {
     stranded = "paired-end"
 } else {}
 
-// USER PARAMETER INPUT: PATHS TO BE BINDED TO THE IMAGE
-bind_dir      = [ params.data, out_dir, new File("${params.genome}").getParent(), new File("${params.genes}").getParent() ]
-    .unique()
-    .collect { it -> "-B ${it}"}
-    .join("\n" + ' '.multiply(26))
-    .toString()
+def breakIfNull(parameter,error) {
+    if (parameter == null) {
+        exit 1, error
+    } else {}
+}
 
-if(params.trim == null) {
-    if(stranded == "paired-end") {
-        trim_params = "ILLUMINACLIP:TruSeq3-PE-2.fa:2:30:10:8:keepBothReads TRAILING:28 MINLEN:40"
-    } else if(stranded == "single-end") {
-        trim_params = "ILLUMINACLIP:TruSeq3-SE.fa:2:30:10 TRAILING:28 MINLEN:40"
-    }
-} else{
-    trim_params = params.trim
+// USER PARAMETER INPUT: TRIMMOMATIC OPTIONS
+switch (params.trim) {
+    case [null]:
+        switch (stranded) {
+            case ["paired-end"]:
+                trim_params = "ILLUMINACLIP:TruSeq3-PE-2.fa:2:30:10:8:keepBothReads TRAILING:28 MINLEN:40"
+                break
+            case ["single-end"]:
+                trim_params = "ILLUMINACLIP:TruSeq3-SE.fa:2:30:10 TRAILING:28 MINLEN:40"
+                break
+        }
+    default:
+        trim_params = params.trim
+        break
 }
 
 // OUTPUT DIRECTORIES
-out_dir.mkdir()
 qc_dir        = file("${out_dir}/1_Read_QC", type: 'dir')
 trim_dir      = file("${out_dir}/2_Read_Trimming", type: 'dir')
 align_dir     = file("${out_dir}/3_Read_Alignment", type: 'dir')
 counts_dir    = file("${out_dir}/4_Read_Counts", type: 'dir')
 multiqc_dir   = file("${out_dir}/5_MultiQC", type: 'dir')
-ext           = "fastq,fastq.gz,fastq.bz2,fq,fq.gz,fq.bz2"
 
-
-//  ======================================================================================================
-//  RUN INFO
-//  ======================================================================================================
-options="nf-rnaSeqCount v0.2 - Input/Output and Parameters:"
-println "\n" + "=".multiply(100)
-println "#".multiply(48 - ("${options}".size() / 2 )) + "  ${options}  " + "#".multiply(48 - ("${options}".size() / 2 ))
-println "=".multiply(100)
-println "Input data              : $data_dir"
-println "Input data type         : $stranded"
-println "Output directory        : $out_dir"
-println ' '.multiply(26) + "- ${qc_dir.baseName}"
-println ' '.multiply(26) + "- ${trim_dir.baseName}"
-println ' '.multiply(26) + "- ${align_dir.baseName}"
-println ' '.multiply(26) + "- ${counts_dir.baseName}"
-println ' '.multiply(26) + "- ${multiqc_dir.baseName}"
-println "Genome                  : $genome"
-println "Genome annotation       : $genes"
-println "Trimmomatic parameters  : $trim_params"
-println "Paths to bind           : $bind_dir"
-println "=".multiply(100)
-println " "
-// ======================================================================================================
-//  PIPELINE START
-// ======================================================================================================
+ext = "fastq,fastq.gz,fastq.bz2,fq,fq.gz,fq.bz2"
 
 // DATA ABSENT ERRORS
 main_data_error = """
@@ -257,75 +238,138 @@ Are you sure you ran the READ ALIGNMENT STEP using \'--mode run.ReadAlignment\' 
 Please ensure that you have ran the READ ALIGNMENT STEP successfully and try again!
 """
 
-// GET INPUT DATA DEPENDING ON USER "MODE"
-if(mode in ["prep.Containers", "prep.STARIndex", "prep.BowtieIndex"]) {
-    // OPTIONS FOR PREPARING DATA
-    switch (mode) {
-        case ["prep.Containers"]:
-            
-            break
-        case ["prep.STARIndex","prep.BowtieIndex"]:
-            
-            break
-    }
-} else if(mode in ["run.ReadQC", "run.ReadTrimming", "run.ReadAlignment", "run.ReadCounting", "run.MultiQC"]) {
-    // OPTIONS FOR PERFORMING THE ANALYSES
-    switch (mode) {
-        case["run.ReadQC"]:
-            if(stranded == "paired-end") {
-                read_pairs = Channel.fromFilePairs("${data_dir}/*.{${ext}}", type: 'file', size:-1) { "all_reads" }
-                    .ifEmpty { exit 1, "$main_data_error" }
-            } else if(stranded == "single-end") {
-                read_pairs = Channel.fromFilePairs("${data_dir}/*.{${ext}}", type: 'file', size:-1) { "all_reads" }
-                    .ifEmpty { exit 1, "$main_data_error" }
-            }
-            break
-        case["run.ReadTrimming"]:
-            if(stranded == "paired-end") {
-                read_pairs = Channel.fromFilePairs("${data_dir}/*{R,read}[1,2]*.{${ext}}", type: 'file')
-                    .ifEmpty { exit 1, "$main_data_error" }
-            } else if(stranded == "single-end") {
-                read_pairs = Channel.fromFilePairs("${data_dir}/*.{${ext}}", type: 'file', size:1)
-                    .ifEmpty { exit 1, "$main_data_error" }
-            }
-            break
-        case["run.ReadAlignment"]:
-            if(resume_from == null) {
-                if(stranded == "paired-end") {
-                    read_pairs = Channel.fromFilePairs("${data_dir}/*{R,read}[1,2]*.{${ext}}", type: 'file')
-                        .ifEmpty { exit 1, "$main_data_error" }
-                } else if(stranded == "single-end") {
-                    read_pairs = Channel.fromFilePairs("${data_dir}/*.{${ext}}", type: 'file', size:1)
-                        .ifEmpty { exit 1, "$main_data_error" }
+// USER INPUT MODE: WHICH ANALYSIS TO RUN!
+switch (params.mode) {
+    case [null]:
+        exit 1, "$mode_error"
+    
+    case ["prep.Containers", "prep.STARIndex", "prep.BowtieIndex"]:
+        mode = params.mode
+        switch (mode) {
+            case ["prep.Containers"]:
+                break
+            case ["prep.STARIndex","prep.BowtieIndex"]:
+                breakIfNull(params.genome,"$genome_error")
+                breakIfNull(params.genes,"$genes_error")
+                break
+        }
+        break
+
+    case ["run.ReadQC", "run.ReadTrimming", "run.ReadAlignment", "run.ReadCounting", "run.MultiQC"]:
+        mode = params.mode
+        switch (mode) {
+            case ["run.ReadQC"]:
+                breakIfNull(params.data,"$data_error")
+                // GET DATA BASED ON THE STRANDEDNESS
+                switch (stranded) {
+                    case ["paired-end"]:
+                        read_pairs = Channel.fromFilePairs("${data_dir}/*.{${ext}}", type: 'file', size:-1) { "all_reads" }
+                            .ifEmpty { exit 1, "$main_data_error" }
+                        break
+                    case ["single-end"]:
+                        read_pairs = Channel.fromFilePairs("${data_dir}/*.{${ext}}", type: 'file', size:-1) { "all_reads" }
+                            .ifEmpty { exit 1, "$main_data_error" }
+                        break
                 }
-            } else if(resume_from == "run.ReadTrimming") {
-                if(stranded == "paired-end") {
-                    read_pairs = Channel.fromFilePairs("${trim_dir}/*[1,2]P*.{${ext}}", type: 'file')
-                        .ifEmpty { exit 1, "$trim_data_error" }
-                } else if(stranded == "single-end") {
-                    read_pairs = Channel.fromFilePairs("${trim_dir}/*.{${ext}}", type: 'file', size:1)
-                        .ifEmpty { exit 1, "$trim_data_error" }
+                break
+            case ["run.ReadTrimming"]:
+                breakIfNull(params.data,"$data_error")
+                // GET DATA BASED ON THE STRANDEDNESS
+                switch (stranded) {
+                    case ["paired-end"]:
+                        read_pairs = Channel.fromFilePairs("${data_dir}/*{R,read}[1,2]*.{${ext}}", type: 'file')
+                            .ifEmpty { exit 1, "$main_data_error" }
+                        break
+                    case["single-end"]:
+                        read_pairs = Channel.fromFilePairs("${data_dir}/*.{${ext}}", type: 'file', size:1)
+                            .ifEmpty { exit 1, "$main_data_error" }
+                        break
                 }
-            }
-            break
-        case["run.ReadCounting"]:
-            bams = Channel.fromFilePairs("${align_dir}/**_Aligned.out.bam", size:-1) { 
-                file -> "${file.baseName.replace(/_Aligned.out/, "")}" }
-                .ifEmpty { exit 1, "$bams_error" }
-            bams.into { bams_htseqCounts; bams_featureCounts}
-            break
-        case["run.MultiQC"]:
-            // CHECK IF THE OUTPUT DIRECTORY IS EMPTY! GIVE ERROR IF ITS EMPTY
-            break
-    }
-} else {
-    exit 1, "$mode_error"
+                break
+            case ["run.ReadAlignment"]:
+                switch (resume_from) {
+                    case [null]:
+                        breakIfNull(params.data,"$data_error")
+                        breakIfNull(params.genome,"$genome_error")
+                        breakIfNull(params.genes,"$genes_error")
+                        // GET DATA BASED ON THE STRANDEDNESS
+                        switch (stranded) {
+                            case ["paired-end"]:
+                                read_pairs = Channel.fromFilePairs("${data_dir}/*{R,read}[1,2]*.{${ext}}", type: 'file')
+                                    .ifEmpty { exit 1, "$main_data_error" }
+                                break
+                            case ["single-end"]:
+                                read_pairs = Channel.fromFilePairs("${data_dir}/*.{${ext}}", type: 'file', size:1)
+                                    .ifEmpty { exit 1, "$main_data_error" }
+                                break
+                        }
+                        break
+                        
+                    case ["run.ReadTrimming"]:
+                        // GET DATA BASED ON THE STRANDEDNESS
+                        switch (stranded) {
+                            case ["paired-end"]:
+                                read_pairs = Channel.fromFilePairs("${trim_dir}/*[1,2]P*.{${ext}}", type: 'file')
+                                    .ifEmpty { exit 1, "$trim_data_error" }
+                                break
+                            case ["single-end"]:
+                                read_pairs = Channel.fromFilePairs("${trim_dir}/*.{${ext}}", type: 'file', size:1)
+                                    .ifEmpty { exit 1, "$trim_data_error" }
+                                break
+                        }
+                        break
+                }
+                break
+            case ["run.ReadCounting"]:
+                bams = Channel.fromFilePairs("${align_dir}/**_Aligned.out.bam", size:-1) { 
+                    file -> "${file.baseName.replace(/_Aligned.out/, "")}" }
+                    .ifEmpty { exit 1, "$bams_error" }
+                bams.into { bams_htseqCounts; bams_featureCounts}
+                break
+            case ["run.MultiQC"]:
+                break
+        }
+        out_dir.mkdir()
+        break
 }
+
+// USER PARAMETER INPUT: PATHS TO BE BINDED TO THE IMAGE
+bind_dirs = bind_dirs
+    .unique()
+    .collect { it -> "-B ${it}"}
+    .join("\n" + ' '.multiply(26))
+    .toString()
+
+//  ======================================================================================================
+//  RUN INFO
+//  ======================================================================================================
+options="nf-rnaSeqCount v0.2 - Input/Output and Parameters:"
+println "\n" + "=".multiply(100)
+println "#".multiply(48 - ("${options}".size() / 2 )) + "  ${options}  " + "#".multiply(48 - ("${options}".size() / 2 ))
+println "=".multiply(100)
+println "Input data              : $data_dir"
+println "Input data type         : $stranded"
+println "Output directory        : $out_dir"
+println ' '.multiply(26) + "- ${qc_dir.baseName}"
+println ' '.multiply(26) + "- ${trim_dir.baseName}"
+println ' '.multiply(26) + "- ${align_dir.baseName}"
+println ' '.multiply(26) + "- ${counts_dir.baseName}"
+println ' '.multiply(26) + "- ${multiqc_dir.baseName}"
+println "Genome                  : $genome"
+println "Genome annotation       : $genes"
+println "Trimmomatic parameters  : $trim_params"
+println "Paths to bind           : $bind_dir"
+println "=".multiply(100)
+println " "
+// ======================================================================================================
+//  PIPELINE START
+// ======================================================================================================
+
 
 // ========== THIS SECTION IS FOR PREPPING DATA (SINGULARITY IMAGES, STAR INDEXES AND BOWTIE INDEXES)
 switch (mode) {
         //
-    case ['prep.Containers']: // <<<<<< WORKS ALL GOOD HERE!
+    case ['prep.Containers']: 
         base = "shub://phelelani/nf-rnaSeqCount:"
         images = Channel.from( ["${base}star", "${base}htseqcount", "${base}featurecounts", "${base}multiqc", "${base}trinity", "${base}fastqc", "${base}trimmomatic"] )
         
@@ -350,7 +394,7 @@ switch (mode) {
         // ==========
         
         //
-    case ['prep.STARIndex']: /// <<<<<<< WORKS ALL GOOD HERE!
+    case ['prep.STARIndex']:
         process run_GenerateSTARIndex {
             label 'maxi'
             tag { "Generate Star Index" }
@@ -380,7 +424,7 @@ switch (mode) {
         // ==========
         
         //
-    case ['prep.BowtieIndex']: // <<<<<< WORKS! ALL GOOD
+    case ['prep.BowtieIndex']:
         process run_GenerateBowtie2Index {
             label 'maxi'
             tag { "Generate Bowtie2 Index" }
@@ -483,7 +527,7 @@ switch (mode) {
         break
         // --------------------        
 
-    case['run.ReadAlignment']: // <<<<< ALL GOOD - MUST FIX THE READFILE COMMAND
+    case['run.ReadAlignment']:
         process run_STAR {
             label 'maxi'
             tag { sample }

@@ -48,9 +48,9 @@ nf-rnaSeqCount
   |  |--clean_htseqCounts.sh          ## Script for 
   |--LICENSE                          ## Duh!
   |--main.config                      ## User configuration file! All inputs, outputs and options GO HERE!! ONLY file that SHOULD be modified by user!
-  |--main.nf                          ## Main h3avarcall nextflow scripts.
+  |--main.nf                          ## Main nf-rnaSeqCount nextflow scripts.
   |--nextflow.config                  ## Pipeline configuration file! DO NOT EDIT!!!
-  |--nextfnf-rnaSeqCount.png          ## Pipeline 
+  |--nf-rnaSeqCount.png               ## Pipeline flow diagram
   |--README.md                        ## Duh!
 ```
 To get the `help menu` for the workflow, execute the following from anywherre on your system aftercloning the repository:
@@ -80,7 +80,7 @@ MANDATORY ARGUEMENTS:
 --genes      FILE      The genome annotation GFT file. Supported GTF file:
 				[ gtf ]
 --mode       STRING    To specify which step of the workflow you are running (see https://github.com/phelelani/nf-rnaSeqCount).
-                       Availeble options:
+                       Available options:
 				"prep.Containers"   : For downloading Singularity containers used in this workflow.
 				"prep.STARIndex"    : For indexing your reference genome using STAR.
 				"prep.BowtieIndex"  : For indexing your reference genome using Bowtie2.
@@ -92,7 +92,8 @@ MANDATORY ARGUEMENTS:
 
 OPTIONAL ARGUEMENTS:
 --help                 To show this menu.
---out        FOLDER    Path to where the output should be directed (default: $PWD/results_nf-rnaSeqCount).
+--out        FOLDER    Path to where the output should be directed.
+    Default: $PWD/results_nf-rnaSeqCount.
 --from       STRING    Specify to resume workflow from the QC or trimming step. Options:
 				"run.ReadQC"        : To resume from the QC step (default).
 				"run.ReadTrimming"  : To resume from the trimming step.
@@ -102,9 +103,12 @@ OPTIONAL ARGUEMENTS:
                        The default parameters for Trimmomatic I have given you here (for both paird- and single-end sequences) are:
 				For paired-end: "ILLUMINACLIP:TruSeq3-PE-2.fa:2:30:10:8:true TRAILING:28 MINLEN:40"
 				For single-end: "ILLUMINACLIP:TruSeq3-SE.fa:2:30:10:8:true TRAILING:28 MINLEN:40"
---max_memory STRING    Maximum memory you have access to (default: "200.GB")
---max_cpus   STRING    Maximum CPUs you have access to (default: "24")
---max_time   STRING    Maximum time you have access to(default: "24.h")
+--max_memory STRING    Maximum memory you have access to.
+    Default: "200.GB"
+--max_cpus   STRING    Maximum CPUs you have access to. 
+    Default: "24"
+--max_time   STRING    Maximum time you have access to. 
+    Default: "24.h"
 ====================================================================================================
 ```
 
