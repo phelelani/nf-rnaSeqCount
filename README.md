@@ -73,12 +73,6 @@ MANDATORY ARGUEMENTS:
 -profile     STRING    Executor to be used. Available options:
 				"standard"          : Local execution (no job scheduler).
 				"slurm"             : SLURM scheduler.
---data       FOLDER    Path to where the input data (FASTQ files) is located. Supported FASTQ files:
-				[ fastq | fastq.gz | fastq.bz2 | fq | fq.gz | fq.bz2 ]
---genome     FILE      The whole genome FASTA sequence. Supported FASTA files:
-				[ fasta | fa | fna ]
---genes      FILE      The genome annotation GFT file. Supported GTF file:
-				[ gtf ]
 --mode       STRING    To specify which step of the workflow you are running (see https://github.com/phelelani/nf-rnaSeqCount).
                        Available options:
 				"prep.Containers"   : For downloading Singularity containers used in this workflow.
@@ -89,6 +83,12 @@ MANDATORY ARGUEMENTS:
 				"run.ReadAlignment" : For aligning your reads to your reference genome using STAR.
 				"run.ReadCounting"  : For counting features in your reads using HTSeq-count and featureCounts.
 				"run.MultiQC"       : For getting a summary of QC through the analysis using MultiQC.
+--data       FOLDER    Path to where the input data (FASTQ files) is located. Supported FASTQ files:
+				[ fastq | fastq.gz | fastq.bz2 | fq | fq.gz | fq.bz2 ]
+--genome     FILE      The whole genome FASTA sequence. Supported FASTA files:
+				[ fasta | fa | fna ]
+--genes      FILE      The genome annotation GFT file. Supported GTF file:
+				[ gtf ]
 
 OPTIONAL ARGUEMENTS:
 --help                 To show this menu.
