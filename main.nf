@@ -332,6 +332,9 @@ switch (params.mode) {
         }
         out_dir.mkdir()
         break
+    default:
+        exit 1, "$mode_error"
+        break
 }
 
 // USER PARAMETER INPUT: PATHS TO BE BINDED TO THE IMAGE
