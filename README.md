@@ -147,10 +147,10 @@ nextflow run nf-rnaSeqCount -profile slurm --mode prep.Containers
 To generate the `STAR` and `Bowtie2` genome indexes, run the following commands:
 ```
 ## Generate STAR indexes
-nextflow run nf-rnaSeqCount -profile slurm --mode prep.STARIndex --genome "reference/genome.fa" --genes "reference/genes.gtf"
+nextflow run nf-rnaSeqCount -profile slurm --mode prep.STARIndex --genome "$PWD/reference/genome.fa" --genes "$PWD/reference/genes.gtf"
 
 ## Generate Bowtie2 indexes:
-nextflow run nf-rnaSeqCount -profile slurm --mode prep.BowtieIndex --genome "reference/genome.fa" --genes "reference/genes.gtf"
+nextflow run nf-rnaSeqCount -profile slurm --mode prep.BowtieIndex --genome "$PWD/reference/genome.fa" --genes "$PWD/reference/genes.gtf"
 ```
 We are now ready to execute the workflow!
 
@@ -160,9 +160,9 @@ We are now ready to execute the workflow!
 As seen on the `help menu` above, there are a couple of options that you can use with this workflow. It can become a bit tedious and confusing having to specify these commands everytime you have to execute the each section for the analysis. To make your life easier, we will create a configuration script that we will use in this tutorial (we will pass this using the `-c` option of `nextflow`). You can name it whatever you want, but for now, lets call it `myparams.config`. We will add the mandatory arguements for now, but as you become more farmiliar with the workflow - you can experiment with other options. You can use your favourite text editor to create the `myparams.config` file. Copy and paste the the parameters below:
 ```
 params {
-    data = "data/"
-    genome = "reference/genome.fa"
-    genes = "reference/genes.fa"
+    data    = "$PWD/data"
+    genome  = "$PWD/reference/genome.fa"
+    genes   = "$PWD/reference/genes.fa"
 }
 ```
 Obviously - the above `myparams.config` assumes that you have been following this tutorial. If you have your data lying around somewhere in your system, you need to put the full path to where your the `data`, `genome` and `genes` files are. Since the `--mode` will keep changing, we will add this on the command as we do the analysis. Now that we have the mandatory arguements in our `myparams.config`, lets do some analysis
@@ -214,7 +214,7 @@ CONGRATULATIONS for getting this far!! :) You can now explore the results and us
 - [5] MultiQC                    =>    `<output_directory>/5_MultiQC
 - [6] Workflow tracing           =>    `<output_directory>/workflow-tracing
 ```
-In addition to the 5 directories created for each step in the results directory, a directory `workflow-tracing` is created to monitor the resources used in each step. This directory will contain 4 files for each step (--mode) of the workflow:
+In addition to the 5 directories created for each step in the results directory, a directory `workflow-tracing` is created to monitor the resources used in each step. This directory will contain 3 files for each step (--mode) of the workflow:
 - `nf-rnaSeqCount_<mode>_report.html`
 - `nf-rnaSeqCount_<mode>_timeline.html`
 - `nf-rnaSeqCount_<mode>_trace.txt`
