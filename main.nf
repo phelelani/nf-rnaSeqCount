@@ -278,7 +278,7 @@ switch (params.mode) {
                 // GET DATA BASED ON THE STRANDEDNESS
                 switch (stranded) {
                     case ["paired-end"]:
-                        read_pairs = Channel.fromFilePairs("${data_dir}/*{R,read}[1,2]*.{${ext}}", type: 'file')
+                        read_pairs = Channel.fromFilePairs("${data_dir}/*{R,read,_}[1,2]*.{${ext}}", type: 'file')
                             .ifEmpty { exit 1, "$main_data_error" }
                         break
                     case["single-end"]:
@@ -296,7 +296,7 @@ switch (params.mode) {
                         // GET DATA BASED ON THE STRANDEDNESS
                         switch (stranded) {
                             case ["paired-end"]:
-                                read_pairs = Channel.fromFilePairs("${data_dir}/*{R,read}[1,2]*.{${ext}}", type: 'file')
+                                read_pairs = Channel.fromFilePairs("${data_dir}/*{R,read,_}[1,2]*.{${ext}}", type: 'file')
                                     .ifEmpty { exit 1, "$main_data_error" }
                                 break
                             case ["single-end"]:
