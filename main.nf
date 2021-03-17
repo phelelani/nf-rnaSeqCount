@@ -564,7 +564,7 @@ switch (mode) {
         case['run.ReadCounting']:
         // USE HTSEQCOUNTS TO GET RAW READ COUNTS
         process run_HTSeqCount {
-            label 'mini'
+            label 'maxi'
             publishDir "${counts_dir}/htseqCounts", mode: 'copy', overwrite: true
 
             input:
@@ -623,7 +623,7 @@ switch (mode) {
 
         // USE FEATURECOUNTS TO GET RAW GENE COUNTS
         process run_FeatureCounts {
-            label 'midi'
+            label 'maxi'
             tag { 'featureCounts - ALL' }
             publishDir "${counts_dir}/featureCounts", mode: 'copy', overwrite: false
 
