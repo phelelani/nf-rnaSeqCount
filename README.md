@@ -13,7 +13,7 @@
       - `nf-rnaSeqCount-multiqc.sif`
       - `nf-rnaSeqCount-star.sif`
       - `nf-rnaSeqCount-trimmomatic.sif`
-      - `nf-rnaSeqCount-trinity.sif`
+      - `nf-rnaSeqCount-bowtie2.sif`
    3. Reference genome, annotation and indexes
       - Reference genome (`.fa`/`.fasta`) and genome annotation (`.gtf`) files.
       - Reference genome indexes (`bowtie2` & `STAR` - see *1.3.* below on how to generate the indexes).
@@ -76,8 +76,7 @@ MANDATORY ARGUEMENTS:
 --mode       STRING    To specify which step of the workflow you are running (see https://github.com/phelelani/nf-rnaSeqCount).
                        Available options:
 				"prep.Containers"   : For downloading Singularity containers used in this workflow.
-				"prep.STARIndex"    : For indexing your reference genome using STAR.
-				"prep.BowtieIndex"  : For indexing your reference genome using Bowtie2.
+				"prep.Indexes"    : For indexing your reference genome using STAR and Bowtie2.
 				"run.ReadQC"        : For performing general QC on your reads using FastQC. 
 				"run.ReadTrimming"  : For trimming low quality bases and removing adapters from your reads using Trimmmomatic.
 				"run.ReadAlignment" : For aligning your reads to your reference genome using STAR.
@@ -146,11 +145,8 @@ nextflow run nf-rnaSeqCount -profile slurm --mode prep.Containers
 ### 1.3. Generating genome indexes.
 To generate the `STAR` and `Bowtie2` genome indexes, run the following commands:
 ```
-## Generate STAR indexes
-nextflow run nf-rnaSeqCount -profile slurm --mode prep.STARIndex --genome "$PWD/reference/genome.fa" --genes "$PWD/reference/genes.gtf"
-
-## Generate Bowtie2 indexes:
-nextflow run nf-rnaSeqCount -profile slurm --mode prep.BowtieIndex --genome "$PWD/reference/genome.fa" --genes "$PWD/reference/genes.gtf"
+## Generate STAR and Bowtie2 indexes
+nextflow run nf-rnaSeqCount -profile slurm --mode prep.Indexes --genome "$PWD/reference/genome.fa" --genes "$PWD/reference/genes.gtf"
 ```
 We are now ready to execute the workflow!
 

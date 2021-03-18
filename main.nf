@@ -22,8 +22,7 @@ if (params.help) {
     println "--mode       STRING    To specify which step of the workflow you are running (see https://github.com/phelelani/nf-rnaSeqCount)."
     println "                       Availeble options:"
     println "\t\t\t\t\"prep.Containers\"   : For downloading Singularity containers used in this workflow."
-    println "\t\t\t\t\"prep.STARIndex\"    : For indexing your reference genome using STAR."
-    println "\t\t\t\t\"prep.BowtieIndex\"  : For indexing your reference genome using Bowtie2."
+    println "\t\t\t\t\"prep.Indexes\"      : For indexing your reference genome using STAR and Bowtie2."
     println "\t\t\t\t\"run.ReadQC\"        : For performing general QC on your reads using FastQC. "
     println "\t\t\t\t\"run.ReadTrimming\"  : For trimming low quality bases and removing adapters from your reads using Trimmmomatic."
     println "\t\t\t\t\"run.ReadAlignment\" : For aligning your reads to your reference genome using STAR."
@@ -94,8 +93,7 @@ Oooh no!! Looks like there's an serious issue in your command!
 I do not recognise the \'--mode ${params.mode}\' option you have given me, or you have not given me any \'--mode\' option at all!
 The allowed options for \'--mode\' are:
 \tprep.Containers\t\t: For downloading Singularity containers used in this workflow.
-\tprep.STARIndex\t\t: For indexing your reference genome using STAR.
-\tprep.BowtieIndex\t: For indexing your reference genome using Bowtie2.
+\tprep.Indexes\t\t: For indexing your reference genome using STAR and Bowtie2.
 \trun.ReadQC\t\t: For performing general QC on your reads using FastQC. 
 \trun.ReadTrimming\t: For trimming low quality bases and removing adapters from your reads using Trimmmomatic.
 \trun.ReadAlignment\t: For aligning your reads to your reference genome using STAR.
@@ -244,12 +242,12 @@ switch (params.mode) {
     case [null]:
         exit 1, "$mode_error"
     
-    case ["prep.Containers", "prep.STARIndex", "prep.BowtieIndex"]:
+    case ["prep.Containers", "prep.Indexes"]:
         mode = params.mode
         switch (mode) {
             case ["prep.Containers"]:
                 break
-            case ["prep.STARIndex","prep.BowtieIndex"]:
+            case ["prep.Indexes"]:
                 breakIfNull(params.genome,"$genome_error")
                 breakIfNull(params.genes,"$genes_error")
                 break
@@ -374,8 +372,8 @@ println " "
 switch (mode) {
         //
     case ['prep.Containers']: 
-        base = "shub://phelelani/nf-rnaSeqCount:"
-        images = Channel.from( ["${base}star", "${base}htseqcount", "${base}featurecounts", "${base}multiqc", "${base}trinity", "${base}fastqc", "${base}trimmomatic"] )
+        base = "docker://phelelani/nf-rnaseqcount:"
+        images = Channel.from( ["${base}star", "${base}htseqcount", "${base}featurecounts", "${base}multiqc", "${base}bowtie2", "${base}fastqc", "${base}trimmomatic"] )
         
         process run_DownloadContainers {
             label 'mini'
@@ -396,7 +394,7 @@ switch (mode) {
         // ==========
         
         //
-    case ['prep.STARIndex']:
+    case ['prep.Indexes']:
         process run_GenerateSTARIndex {
             label 'maxi'
             tag { "Generate Star Index" }
@@ -422,11 +420,7 @@ switch (mode) {
             }
             println " "
         }
-        break
-        // ==========
-        
-        //
-    case ['prep.BowtieIndex']:
+
         process run_GenerateBowtie2Index {
             label 'maxi'
             tag { "Generate Bowtie2 Index" }
@@ -447,6 +441,7 @@ switch (mode) {
             }
             println " "
         }
+
         break
         // ========== PREPPING STEPS/OPTIONS END HERE!
 
@@ -565,6 +560,7 @@ switch (mode) {
         // USE HTSEQCOUNTS TO GET RAW READ COUNTS
         process run_HTSeqCount {
             label 'maxi'
+            tag { sample }
             publishDir "${counts_dir}/htseqCounts", mode: 'copy', overwrite: true
 
             input:
