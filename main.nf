@@ -559,7 +559,7 @@ switch (mode) {
         case['run.ReadCounting']:
         // USE HTSEQCOUNTS TO GET RAW READ COUNTS
         process run_HTSeqCount {
-            label 'maxi'
+            label 'mini'
             tag { sample }
             publishDir "${counts_dir}/htseqCounts", mode: 'copy', overwrite: true
 
