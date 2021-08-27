@@ -1,6 +1,6 @@
 # nf-rnaSeqCount
 
-[![GitHub license](https://img.shields.io/github/license/phelelani/nf-rnaSeqCount)](https://github.com/phelelani/nf-rnaSeqCount/blob/master/LICENSE) [![fair-software.eu](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8B-yellow)](https://fair-software.eu)
+[![GitHub license](https://img.shields.io/github/license/phelelani/nf-rnaSeqCount)](https://github.com/phelelani/nf-rnaSeqCount/blob/master/LICENSE) [![fair-software.eu](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8B-yellow)](https://fair-software.eu) [![GitHub stars](https://img.shields.io/github/stars/phelelani/nf-rnaSeqCount)](https://github.com/phelelani/nf-rnaSeqCount/stargazers) [![GitHub issues](https://img.shields.io/github/issues/phelelani/nf-rnaSeqCount)](https://github.com/phelelani/nf-rnaSeqCount/issues)
 
 [biotools:nf-rnaseqcount](https://bio.tools/nf-rnaseqcount)
 
