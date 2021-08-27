@@ -1,8 +1,8 @@
 # nf-rnaSeqCount
 
-[![fair-software.eu](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8B-yellow)](https://fair-software.eu)
+[![GitHub license](https://img.shields.io/github/license/phelelani/nf-rnaSeqCount)](https://github.com/phelelani/nf-rnaSeqCount/blob/master/LICENSE) [![fair-software.eu](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8B-yellow)](https://fair-software.eu)
 
-[biotools:nf-rnaseqcount](https://bio.tools/nf-rnaseqCOUNT)
+[biotools:nf-rnaseqcount](https://bio.tools/nf-rnaseqcount)
 
 `nf-rnaSeqCount` is a [`Nextflow`](http://nextflow.io/) pipeline for obtaining raw read counts for RNA-seq data using a given reference genome and annotation. To use the `nf-rnaSeqCount` pipeline, the following dependencies are required:
    1. Installed softwares:
