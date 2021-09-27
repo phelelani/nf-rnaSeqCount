@@ -384,7 +384,7 @@ switch (mode) {
             each image from images
             
             """
-            singularity pull ${base}${image}
+            singularity pull --force --dir \$HOME/.singularity/cache/ ${base}${image}
             """
         }
         break
