@@ -1,7 +1,6 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl=2
 
-println "clear".execute().text
 /*  ======================================================================================================
  *  HELP MENU
  *  ======================================================================================================
@@ -9,6 +8,7 @@ println "clear".execute().text
 line="=".multiply(100)
 ver="nf-rnaSeqCount v0.2"
 if (params.help) {
+    println "clear".execute().text    
     println "\n${line}"
     println "#".multiply(48 - ("${ver}".size() / 2 )) + "  ${ver}   " + "#".multiply(48 - ("${ver}".size() / 2 ))
     println "${line}\n"
